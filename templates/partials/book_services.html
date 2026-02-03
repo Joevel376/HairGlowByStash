@@ -1,0 +1,29 @@
+<!-- STEP 2: SELECT SERVICE -->
+
+<div class="space-y-4">
+
+  {% for service in services %}
+  <div
+    class="service-card border-2 border-gray-200 rounded-xl p-5 cursor-pointer hover:border-pink-500 transition hidden"
+    data-category="{{ service.category }}"
+    data-service-id="{{ service.id }}"
+    data-service-name="{{ service.name }}"
+    data-service-duration="{{ service.duration }}"
+    data-service-price="{{ service.price }}"
+    onclick="selectService(this)"
+  >
+    <div class="flex justify-between">
+      <div>
+        <h3 class="font-semibold">{{ service.name }}</h3>
+        <p class="text-sm text-gray-600">
+          {{ service.duration // 60 }}h{% if service.duration % 60 %} {{ service.duration % 60 }}m{% endif %}
+        </p>
+      </div>
+      <div class="font-bold">
+        ${{ "{:,}".format(service.price) }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>

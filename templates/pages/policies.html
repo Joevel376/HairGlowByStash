@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- NAVIGATION -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="flex items-center justify-between h-16 md:h-20">
+
+      <!-- Logo -->
+      <a href="/" class="flex-shrink-0">
+        <img
+          src="{{ url_for('static', path='images/HGS-logo2.jpeg') }}"
+          alt="Hair Glow By Stash"
+          class="h-10 md:h-12 w-auto"
+        />
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="/" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Home</a>
+        <a href="/#about" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">About</a>
+        <a href="/#services" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Services</a>
+        <a href="/#contact" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Contact</a>
+        <a
+          href="/book"
+          class="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-2.5 rounded-full font-semibold shadow-md hover:shadow-lg transition-all"
+        >
+          Book Now
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <a
+        href="/"
+        class="md:hidden text-gray-700 hover:text-pink-600 font-medium"
+      >
+        ← Home
+      </a>
+
+    </div>
+  </div>
+</nav>
+
+
+<!-- POLICIES SECTION -->
+<section class="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-24 md:pt-28 pb-16">
+  <div class="max-w-4xl mx-auto px-5">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Booking Policies</h1>
+      <div class="w-20 h-1 bg-gradient-to-r from-pink-500 to-pink-600 mx-auto rounded-full mb-6"></div>
+      <p class="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
+        Please review our policies carefully before scheduling your appointment
+      </p>
+    </div>
+
+    <!-- Intro -->
+    <div class="bg-gradient-to-br from-pink-50 to-white border border-pink-200 rounded-2xl p-6 md:p-8 mb-8">
+      <p class="text-gray-700 leading-relaxed">
+        To provide the best possible experience for all clients, Hair Glow By Stash
+        has the following booking policies in place. Please review carefully before
+        scheduling an appointment.
+      </p>
+    </div>
+
+    <!-- Policy Cards -->
+    <div class="space-y-6">
+
+      <!-- Hair Preparation -->
+      <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 hover:shadow-lg transition-shadow">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-4">Hair Preparation</h2>
+            <ul class="space-y-3 text-gray-700">
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 flex-shrink-0"></span>
+                <span>Hair must be freshly washed before your appointment.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 flex-shrink-0"></span>
+                <span>No oil or leave-in conditioner should be applied prior to arrival.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 flex-shrink-0"></span>
+                <span>All new wigs must be dropped off at least <strong class="text-gray-900">2 days before</strong> the scheduled appointment.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Salon Guidelines -->
+      <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 hover:shadow-lg transition-shadow">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-4">Salon Guidelines</h2>
+            <ul class="space-y-3 text-gray-700">
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 flex-shrink-0"></span>
+                <span>Hair Glow By Stash operates on a <strong class="text-gray-900">one-client-at-a-time</strong> basis.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 flex-shrink-0"></span>
+                <span>No extra company or children are allowed inside the salon during appointments.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service Information -->
+      <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 hover:shadow-lg transition-shadow">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-4">Service Information</h2>
+            <ul class="space-y-3 text-gray-700">
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 flex-shrink-0"></span>
+                <span><strong class="text-gray-900">Gel X nail services only.</strong></span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 flex-shrink-0"></span>
+                <span>Acrylic soak-offs and acrylic refills are not offered.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Note -->
+    <div class="mt-8 bg-gradient-to-br from-gray-50 to-white border border-gray-300 rounded-2xl p-6 md:p-8 text-center">
+      <p class="text-gray-700 leading-relaxed">
+        By booking an appointment, you acknowledge that you have read and agree
+        to these policies. Thank you for your understanding and cooperation.
+      </p>
+    </div>
+
+    <!-- Back Link -->
+    <div class="text-center mt-8">
+      <a href="/" class="inline-flex items-center gap-2 text-gray-600 hover:text-pink-600 font-medium transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Home
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="bg-black text-gray-400 border-t border-gray-800">
+  <div class="max-w-6xl mx-auto px-5 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-sm">
+      <p>© 2026 Hair Glow By Stash. All rights reserved.</p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="/policies" class="hover:text-pink-400 transition-colors">Policies</a>
+        <span>•</span>
+        <a href="/payments" class="hover:text-pink-400 transition-colors">Payments</a>
+        <span>•</span>
+        <a href="/terms" class="hover:text-pink-400 transition-colors">Terms</a>
+        <span>•</span>
+        <a href="/privacy" class="hover:text-pink-400 transition-colors">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}

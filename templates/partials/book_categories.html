@@ -1,0 +1,26 @@
+<!-- STEP 1: SELECT CATEGORY -->
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+
+  {% for key, item in {
+    'braids': ['Braids', 'Knotless, boho, stitch & sew-in styles'],
+    'locs_twists': ['Locs & Twists', 'Marley twists, soft locs, invisible locs'],
+    'ponytails': ['Ponytails', 'Braided and weave ponytails'],
+    'lashes': ['Lashes', 'Classic and hybrid lash sets'],
+    'nails': ['Nails', 'Gel X, builder gel, toes & designs'],
+    'addons': ['Add-ons', 'Length, curls, ends & extras']
+  }.items() %}
+
+  <button
+    type="button"
+    class="category-btn border rounded-xl p-6 text-left hover:border-black transition"
+    data-category="{{ key }}"
+    onclick="selectCategory(this)"
+  >
+    <h3 class="font-semibold text-lg mb-2">{{ item[0] }}</h3>
+    <p class="text-sm text-gray-600">{{ item[1] }}</p>
+  </button>
+
+  {% endfor %}
+
+</div>

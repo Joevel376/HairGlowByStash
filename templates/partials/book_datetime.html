@@ -1,0 +1,65 @@
+<!-- STEP 3: DATE & TIME SELECTION -->
+<section id="step-3" class="hidden mt-10">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-900">Select Date & Time</h2>
+    <p class="text-gray-600 text-sm mt-1">
+      Choose a date and available time for your appointment
+    </p>
+  </div>
+
+  <!-- Selected Service Summary (JS fills this) -->
+  <div class="mb-6 p-4 border-2 border-pink-200 rounded-xl bg-pink-50">
+    <p class="text-sm text-gray-600">Selected Service</p>
+    <p id="summaryService" class="text-lg font-bold text-gray-900"></p>
+    <p id="summaryPrice" class="text-sm text-gray-700"></p>
+  </div>
+
+  <!-- Date Picker -->
+  <div class="mb-6">
+    <label class="block text-sm font-semibold text-gray-700 mb-2">
+      Select a date
+    </label>
+    <input
+      type="date"
+      id="bookingDate"
+      class="w-full border-2 border-gray-300 rounded-xl px-4 py-3
+             focus:border-pink-500 focus:ring-4 focus:ring-pink-100
+             transition-all outline-none"
+    />
+  </div>
+
+  <!-- Time Slots -->
+  <div class="mb-6">
+    <p class="text-sm font-semibold text-gray-700 mb-3">
+      Available Times
+    </p>
+
+    <div id="timeSlots" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+      <!-- JS will inject slots -->
+    </div>
+  </div>
+
+  <!-- Selected Time -->
+  <div id="selectedTimeBox" class="hidden mb-6 p-4 border-2 border-pink-300 rounded-xl bg-pink-50">
+    <p class="text-sm text-gray-600">Selected Time</p>
+    <p id="selectedTimeText" class="text-lg font-bold text-gray-900"></p>
+    <p class="text-xs text-gray-500 mt-1">
+      Slot held for <strong>15 minutes</strong>
+    </p>
+  </div>
+
+  <!-- Continue -->
+  <button
+    onclick="goToStep(4)"
+    id="continueToConfirm"
+    class="hidden w-full bg-gradient-to-r from-pink-500 to-pink-600
+           hover:from-pink-600 hover:to-pink-700
+           text-white py-4 rounded-xl font-semibold text-lg
+           shadow-lg hover:shadow-xl transition-all"
+  >
+    Continue to Confirmation
+  </button>
+
+</section>

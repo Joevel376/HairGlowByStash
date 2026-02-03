@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- NAVIGATION -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="flex items-center justify-between h-16 md:h-20">
+
+      <!-- Logo -->
+      <a href="/" class="flex-shrink-0">
+        <img
+          src="{{ url_for('static', path='images/HGS-logo2.jpeg') }}"
+          alt="Hair Glow By Stash"
+          class="h-10 md:h-12 w-auto"
+        />
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="/" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Home</a>
+        <a href="/#about" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">About</a>
+        <a href="/#services" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Services</a>
+        <a href="/#contact" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Contact</a>
+      </div>
+
+      <!-- Mobile Back -->
+      <a href="/" class="md:hidden text-gray-700 hover:text-pink-600 font-medium">← Home</a>
+
+    </div>
+  </div>
+</nav>
+
+<!-- STEP 1: CATEGORIES (Main Page) -->
+<section class="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-24 md:pt-28 pb-16">
+  <div class="max-w-5xl mx-auto px-5">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Book Your Appointment</h1>
+      <div class="w-20 h-1 bg-gradient-to-r from-pink-500 to-pink-600 mx-auto rounded-full mb-6"></div>
+      <p class="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
+        Select a service category to continue
+      </p>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <button
+        type="button"
+        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
+        data-category="braids"
+        onclick="selectCategory(this)"
+      >
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Braids</h3>
+        <p class="text-sm md:text-base text-gray-600 mb-4">Knotless, boho, stitch & sew-in styles</p>
+        <div class="flex items-center text-pink-600 font-semibold">
+          <span>Explore</span>
+          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+      <button
+        type="button"
+        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
+        data-category="locs_twists"
+        onclick="selectCategory(this)"
+      >
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Locs & Twists</h3>
+        <p class="text-sm md:text-base text-gray-600 mb-4">Marley twists, soft locs, invisible locs</p>
+        <div class="flex items-center text-pink-600 font-semibold">
+          <span>Explore</span>
+          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+      <button
+        type="button"
+        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
+        data-category="ponytails"
+        onclick="selectCategory(this)"
+      >
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Ponytails</h3>
+        <p class="text-sm md:text-base text-gray-600 mb-4">Braided and weave ponytails</p>
+        <div class="flex items-center text-pink-600 font-semibold">
+          <span>Explore</span>
+          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+      <button
+        type="button"
+        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
+        data-category="lashes"
+        onclick="selectCategory(this)"
+      >
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Lashes</h3>
+        <p class="text-sm md:text-base text-gray-600 mb-4">Classic and hybrid lash sets</p>
+        <div class="flex items-center text-pink-600 font-semibold">
+          <span>Explore</span>
+          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+      <button
+        type="button"
+        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
+        data-category="nails"
+        onclick="selectCategory(this)"
+      >
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Nails</h3>
+        <p class="text-sm md:text-base text-gray-600 mb-4">Gel X, builder gel, toes & designs</p>
+        <div class="flex items-center text-pink-600 font-semibold">
+          <span>Explore</span>
+          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+      <button
+        type="button"
+        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
+        data-category="add_ons"
+        onclick="selectCategory(this)"
+      >
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Add-ons</h3>
+        <p class="text-sm md:text-base text-gray-600 mb-4">Length, curls, ends & extras</p>
+        <div class="flex items-center text-pink-600 font-semibold">
+          <span>Explore</span>
+          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+    </div>
+
+    <!-- Back Link -->
+    <div class="text-center mt-12">
+      <a href="/" class="inline-flex items-center gap-2 text-gray-600 hover:text-pink-600 font-medium transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Home
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- MODAL -->
+<div id="bookingModal"
+     class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl relative max-h-[90vh] overflow-hidden flex flex-col">
+
+    <!-- Modal Header -->
+    <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between flex-shrink-0">
+      <span id="stepIndicator" class="text-sm font-semibold text-gray-700">Step 2 of 4</span>
+      <button onclick="closeBookingModal()" class="text-gray-500 hover:text-gray-900 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Content (Scrollable) -->
+    <div class="overflow-y-auto flex-1">
+
+      <!-- STEP 2: Services -->
+      <div id="step-service" class="booking-step px-6 py-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6 capitalize" id="categoryTitle"></h2>
+        <div id="servicesList" class="space-y-4"></div>
+      </div>
+
+      <!-- STEP 3: Date & Time -->
+      <div id="step-datetime" class="booking-step px-6 py-8 hidden">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Select Date & Time</h2>
+        <div id="datetimeContent"></div>
+      </div>
+
+      <!-- STEP 4: Confirm -->
+      <div id="step-confirm" class="booking-step px-6 py-8 hidden">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Confirm Booking</h2>
+        <div id="confirmContent"></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-black text-gray-400 border-t border-gray-800">
+  <div class="max-w-6xl mx-auto px-5 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-sm">
+      <p>© 2026 Hair Glow By Stash. All rights reserved.</p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="/policies" class="hover:text-pink-400 transition-colors">Policies</a>
+        <span>•</span>
+        <a href="/payments" class="hover:text-pink-400 transition-colors">Payments</a>
+        <span>•</span>
+        <a href="/privacy" class="hover:text-pink-400 transition-colors">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================
+   GLOBAL STATE
+========================= */
+const bookingState = {
+  category: null,
+  service: null,
+  date: null,
+  time: null
+};
+
+// Mock services data - replace with actual data from backend
+const services = {
+  braids: [
+    { id: 1, name: "Small Knotless Bontu / Mid Back", duration: 630, price: 9000 },
+    { id: 2, name: "Smedium Knotless Bontu / Mid Back", duration: 270, price: 8000 },
+    { id: 3, name: "Medium Knotless Bontu / Mid Back", duration: 210, price: 7000 }
+  ],
+  locs_twists: [
+    { id: 33, name: "5–6 Rows Invisible Locs", duration: 240, price: 8000 },
+    { id: 35, name: "Smedium Marley Twist Bob", duration: 270, price: 9000 }
+  ],
+  ponytails: [
+    { id: 31, name: "Braided Ponytail", duration: 120, price: 2500 },
+    { id: 32, name: "Weave Ponytail", duration: 150, price: 3000 }
+  ],
+  lashes: [
+    { id: 48, name: "Classic Cluster Lash", duration: 40, price: 1500 },
+    { id: 49, name: "Hybrid Lash", duration: 45, price: 2000 }
+  ],
+  nails: [
+    { id: 50, name: "Short Gel X – Solid Color", duration: 120, price: 3500 },
+    { id: 51, name: "Short Nails – French", duration: 150, price: 4500 }
+  ],
+  add_ons: [
+    { id: 39, name: "Add Curly Hair", duration: 90, price: 2000 },
+    { id: 40, name: "Bontu Ends", duration: 90, price: 1500 }
+  ]
+};
+
+/* =========================
+   MODAL FUNCTIONS
+========================= */
+function openBookingModal() {
+  document.getElementById("bookingModal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeBookingModal() {
+  document.getElementById("bookingModal").classList.add("hidden");
+  document.body.style.overflow = "auto";
+  resetBooking();
+}
+
+function goToStep(step) {
+  document.querySelectorAll(".booking-step").forEach(s => s.classList.add("hidden"));
+
+  const map = { 2: "step-service", 3: "step-datetime", 4: "step-confirm" };
+  document.getElementById(map[step]).classList.remove("hidden");
+  document.getElementById("stepIndicator").innerText = `Step ${step} of 4`;
+}
+
+/* =========================
+   STEP 1 → 2
+========================= */
+function selectCategory(el) {
+  bookingState.category = el.dataset.category;
+
+  // Update category title
+  document.getElementById("categoryTitle").textContent =
+    el.querySelector("h3").textContent;
+
+  // Load services for this category
+  loadServices();
+
+  openBookingModal();
+  goToStep(2);
+}
+
+function loadServices() {
+  const servicesList = document.getElementById("servicesList");
+  const categoryServices = services[bookingState.category] || [];
+
+  servicesList.innerHTML = categoryServices.map(service => `
+    <button
+      class="service-card block w-full bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-pink-400 hover:shadow-lg transition-all text-left"
+      data-service-id="${service.id}"
+      data-service-name="${service.name}"
+      data-service-duration="${service.duration}"
+      data-service-price="${service.price}"
+      onclick="selectService(this)"
+    >
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <h3 class="text-lg font-bold text-gray-900 mb-2">${service.name}</h3>
+          <p class="text-sm text-gray-600">
+            ${Math.floor(service.duration / 60)}h ${service.duration % 60 > 0 ? (service.duration % 60) + 'm' : ''}
+          </p>
+        </div>
+        <div class="text-2xl font-bold text-pink-600">
+          J$${service.price.toLocaleString()}
+        </div>
+      </div>
+    </button>
+  `).join('');
+}
+
+/* =========================
+   STEP 2 → 3
+========================= */
+function selectService(el) {
+  bookingState.service = {
+    id: el.dataset.serviceId,
+    name: el.dataset.serviceName,
+    duration: el.dataset.serviceDuration,
+    price: el.dataset.servicePrice
+  };
+
+  // Load datetime selection
+  loadDateTime();
+  goToStep(3);
+}
+
+function loadDateTime() {
+  const content = document.getElementById("datetimeContent");
+  content.innerHTML = `
+    <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 mb-6">
+      <h3 class="text-lg font-bold text-gray-900 mb-4">Choose Your Date</h3>
+      <input type="date" id="selectedDate" class="w-full border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100 rounded-xl px-4 py-3" min="${new Date().toISOString().split('T')[0]}">
+      <button onclick="checkAvailability()" class="mt-4 w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-3 rounded-xl font-semibold">Check Availability</button>
+    </div>
+    <div id="timeSlots" class="hidden">
+      <h3 class="text-lg font-bold text-gray-900 mb-4">Available Times</h3>
+      <div class="grid grid-cols-3 md:grid-cols-4 gap-3" id="timeSlotsGrid"></div>
+    </div>
+  `;
+}
+
+function checkAvailability() {
+  const date = document.getElementById("selectedDate").value;
+  if (!date) {
+    alert("Please select a date");
+    return;
+  }
+
+  bookingState.date = date;
+
+  // Mock time slots
+  const times = ["9:00 AM", "10:30 AM", "1:00 PM", "3:30 PM", "5:00 PM"];
+  const grid = document.getElementById("timeSlotsGrid");
+
+  grid.innerHTML = times.map(time => `
+    <button
+      class="time-slot border-2 border-gray-300 rounded-xl py-3 px-4 text-sm font-medium hover:border-pink-500 hover:bg-pink-50 transition-all"
+      data-time="${time}"
+      onclick="selectTime(this)"
+    >
+      ${time}
+    </button>
+  `).join('');
+
+  document.getElementById("timeSlots").classList.remove("hidden");
+}
+
+/* =========================
+   STEP 3 → 4
+========================= */
+function selectTime(el) {
+  bookingState.time = el.dataset.time;
+  loadConfirm();
+  goToStep(4);
+}
+
+function loadConfirm() {
+  const content = document.getElementById("confirmContent");
+  content.innerHTML = `
+    <div class="bg-white border-2 border-pink-200 rounded-2xl p-6 mb-6">
+      <h3 class="text-lg font-bold text-gray-900 mb-4">Appointment Summary</h3>
+      <div class="space-y-3 text-gray-700">
+        <div class="flex justify-between"><span>Service:</span><strong>${bookingState.service.name}</strong></div>
+        <div class="flex justify-between"><span>Date:</span><strong>${bookingState.date}</strong></div>
+        <div class="flex justify-between"><span>Time:</span><strong>${bookingState.time}</strong></div>
+        <div class="flex justify-between border-t pt-3"><span class="text-lg">Deposit Due:</span><strong class="text-xl text-pink-600">J$2,000</strong></div>
+      </div>
+    </div>
+    <form class="space-y-4">
+      <input type="text" placeholder="Full Name" required class="w-full border-2 border-gray-300 focus:border-pink-500 rounded-xl px-4 py-3">
+      <input type="tel" placeholder="Phone Number" required class="w-full border-2 border-gray-300 focus:border-pink-500 rounded-xl px-4 py-3">
+      <input type="email" placeholder="Email (optional)" class="w-full border-2 border-gray-300 focus:border-pink-500 rounded-xl px-4 py-3">
+      <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-4 rounded-xl font-bold text-lg">Complete Booking</button>
+    </form>
+  `;
+}
+
+function resetBooking() {
+  bookingState.category = null;
+  bookingState.service = null;
+  bookingState.date = null;
+  bookingState.time = null;
+}
+</script>
+
+{% endblock %}

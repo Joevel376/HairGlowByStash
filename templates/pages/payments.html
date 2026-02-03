@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- NAVIGATION -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="flex items-center justify-between h-16 md:h-20">
+
+      <!-- Logo -->
+      <a href="/" class="flex-shrink-0">
+        <img
+          src="{{ url_for('static', path='images/HGS-logo2.jpeg') }}"
+          alt="Hair Glow By Stash"
+          class="h-10 md:h-12 w-auto"
+        />
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="/" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Home</a>
+        <a href="/#about" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">About</a>
+        <a href="/#services" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Services</a>
+        <a href="/#contact" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Contact</a>
+        <a
+          href="/book"
+          class="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-2.5 rounded-full font-semibold shadow-md hover:shadow-lg transition-all"
+        >
+          Book Now
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <a
+        href="/"
+        class="md:hidden text-gray-700 hover:text-pink-600 font-medium"
+      >
+        ← Home
+      </a>
+
+    </div>
+  </div>
+</nav>
+
+
+<!-- PAYMENTS SECTION -->
+<section class="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-24 md:pt-28 pb-16">
+  <div class="max-w-4xl mx-auto px-5">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Payments & Deposits</h1>
+      <div class="w-20 h-1 bg-gradient-to-r from-pink-500 to-pink-600 mx-auto rounded-full mb-6"></div>
+      <p class="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
+        Secure your appointment with our simple deposit process
+      </p>
+    </div>
+
+    <!-- Payment Cards -->
+    <div class="space-y-6">
+
+      <!-- Deposit Requirement -->
+      <div class="bg-white border-2 border-pink-200 rounded-2xl p-6 md:p-8 shadow-lg">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-4">Deposit Requirement</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+              A <strong class="text-pink-600 text-lg">non-refundable deposit of J$2,000</strong> is required to secure
+              all appointments. For services priced below J$2,000, the full service
+              amount is required as the deposit.
+            </p>
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
+              <p class="text-sm text-gray-600">
+                <span class="font-semibold text-gray-900">Example:</span> A J$1,500 service requires a J$1,500 deposit.
+              </p>
+            </div>
+            <p class="text-gray-700 leading-relaxed mb-3">
+              The deposit is applied toward the total cost of your service.
+              Appointments are not confirmed until the deposit has been received.
+            </p>
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-start gap-3">
+              <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              </svg>
+              <p class="text-sm text-gray-700 font-medium">
+                Appointment time slots are not held without payment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proof of Payment -->
+      <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 hover:shadow-lg transition-shadow">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-4">Proof of Payment</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+              Please send your deposit receipt via WhatsApp or Instagram along with:
+            </p>
+            <ul class="space-y-2 text-gray-700 mb-4">
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 flex-shrink-0"></span>
+                <span>Your full name</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 flex-shrink-0"></span>
+                <span>Your appointment date</span>
+              </li>
+            </ul>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <a
+                href="https://wa.me/1876XXXXXXX"
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+                Send via WhatsApp
+              </a>
+              <a
+                href="https://instagram.com/hairglowbystash"
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                Send via Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Banking Information -->
+      <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 hover:shadow-lg transition-shadow">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-4">Banking Information</h2>
+            <div class="bg-gradient-to-br from-blue-50 to-white border border-blue-200 rounded-xl p-6 space-y-3">
+              <div class="flex justify-between items-center border-b border-blue-100 pb-3">
+                <span class="text-gray-600 font-medium">Bank</span>
+                <span class="text-gray-900 font-bold">NCB</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-blue-100 pb-3">
+                <span class="text-gray-600 font-medium">Account Name</span>
+                <span class="text-gray-900 font-bold">Shaneil Hayles</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-blue-100 pb-3">
+                <span class="text-gray-600 font-medium">Branch</span>
+                <span class="text-gray-900 font-bold">St Jago, Spanish Town</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-blue-100 pb-3">
+                <span class="text-gray-600 font-medium">Account Type</span>
+                <span class="text-gray-900 font-bold">Savings</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 font-medium">Account Number</span>
+                <span class="text-pink-600 font-bold text-lg tracking-wider">474734943</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Note -->
+    <div class="mt-8 bg-gradient-to-br from-gray-50 to-white border border-gray-300 rounded-2xl p-6 text-center">
+      <p class="text-sm text-gray-600">
+        All prices are quoted in Jamaican Dollars (JMD).
+      </p>
+    </div>
+
+    <!-- Back Link -->
+    <div class="text-center mt-8">
+      <a href="/" class="inline-flex items-center gap-2 text-gray-600 hover:text-pink-600 font-medium transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Home
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="bg-black text-gray-400 border-t border-gray-800">
+  <div class="max-w-6xl mx-auto px-5 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-sm">
+      <p>© 2026 Hair Glow By Stash. All rights reserved.</p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="/policies" class="hover:text-pink-400 transition-colors">Policies</a>
+        <span>•</span>
+        <a href="/payments" class="hover:text-pink-400 transition-colors">Payments</a>
+        <span>•</span>
+        <a href="/terms" class="hover:text-pink-400 transition-colors">Terms</a>
+        <span>•</span>
+        <a href="/privacy" class="hover:text-pink-400 transition-colors">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}

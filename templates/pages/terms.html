@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- NAVIGATION -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="flex items-center justify-between h-16 md:h-20">
+
+      <!-- Logo -->
+      <a href="/" class="flex-shrink-0">
+        <img
+          src="{{ url_for('static', path='images/HGS-logo2.jpeg') }}"
+          alt="Hair Glow By Stash"
+          class="h-10 md:h-12 w-auto"
+        />
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="/" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Home</a>
+        <a href="/#about" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">About</a>
+        <a href="/#services" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Services</a>
+        <a href="/#contact" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Contact</a>
+        <a
+          href="/book"
+          class="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-2.5 rounded-full font-semibold shadow-md hover:shadow-lg transition-all"
+        >
+          Book Now
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <a
+        href="/"
+        class="md:hidden text-gray-700 hover:text-pink-600 font-medium"
+      >
+        ← Home
+      </a>
+
+    </div>
+  </div>
+</nav>
+
+
+<!-- TERMS SECTION -->
+<section class="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-24 md:pt-28 pb-16">
+  <div class="max-w-4xl mx-auto px-5">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Terms & Cancellation Policy</h1>
+      <div class="w-20 h-1 bg-gradient-to-r from-pink-500 to-pink-600 mx-auto rounded-full mb-6"></div>
+      <p class="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
+        Please review our cancellation and booking terms
+      </p>
+    </div>
+
+    <!-- Terms Content -->
+    <div class="space-y-6">
+
+      <!-- 24 Hour Policy -->
+      <div class="bg-white border-2 border-pink-200 rounded-2xl p-6 md:p-8 shadow-lg">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-3">24-Hour Cancellation Window</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Clients may cancel or reschedule appointments up to
+              <strong class="text-pink-600">24 hours before</strong> the scheduled start time.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deposit Forfeiture -->
+      <div class="bg-white border-2 border-yellow-200 rounded-2xl p-6 md:p-8 shadow-md">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-3">Late Cancellation Policy</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Cancellations or changes made <strong class="text-yellow-700">within 24 hours</strong> may result in the
+              forfeiture of the deposit.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- First-Paid Basis -->
+      <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 hover:shadow-lg transition-shadow">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-3">Appointment Confirmation</h2>
+            <p class="text-gray-700 leading-relaxed mb-3">
+              Appointments are secured on a <strong class="text-gray-900">first-paid basis</strong>.
+              Booking requests without a deposit are considered pending and may
+              be released if payment is not received within the required time window.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+              Hair Glow By Stash is not responsible for holding appointment slots
+              without payment.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Note -->
+    <div class="mt-8 bg-gradient-to-br from-gray-50 to-white border border-gray-300 rounded-2xl p-6 md:p-8 text-center">
+      <div class="flex items-start gap-4 justify-center">
+        <svg class="w-6 h-6 text-gray-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-gray-700 leading-relaxed text-left max-w-2xl">
+          These terms are in place to respect scheduled appointment times
+          and ensure availability for all clients.
+        </p>
+      </div>
+    </div>
+
+    <!-- Back Link -->
+    <div class="text-center mt-8">
+      <a href="/" class="inline-flex items-center gap-2 text-gray-600 hover:text-pink-600 font-medium transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Home
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="bg-black text-gray-400 border-t border-gray-800">
+  <div class="max-w-6xl mx-auto px-5 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-sm">
+      <p>© 2026 Hair Glow By Stash. All rights reserved.</p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="/policies" class="hover:text-pink-400 transition-colors">Policies</a>
+        <span>•</span>
+        <a href="/payments" class="hover:text-pink-400 transition-colors">Payments</a>
+        <span>•</span>
+        <a href="/terms" class="hover:text-pink-400 transition-colors">Terms</a>
+        <span>•</span>
+        <a href="/privacy" class="hover:text-pink-400 transition-colors">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}
