@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from config.services import SERVICES, SERVICE_CATEGORIES
 from datetime import date, time, datetime
 from app.booking.slots import generate_slots
-from config.services import SERVICES
+from collections import defaultdict
 
 
 from config.site import SITE
@@ -61,12 +61,26 @@ async def privacy(request: Request):
     )
 
 
+def group_services_by_category():
+    """Group all services by their category"""
+    grouped = defaultdict(list)
+    for service in SERVICES:
+        grouped[service["category"]].append(service)
+    return dict(grouped)
+
+
 @app.get("/book", response_class=HTMLResponse)
 def booking(request: Request):
     return templates.TemplateResponse(
         "pages/book.html",
-        {"request": request}
+        {
+            "request": request,
+            "service_categories": SERVICE_CATEGORIES,
+            "services_by_category": group_services_by_category(),
+            "today": date.today().isoformat(),
+        }
     )
+
 
 
 # @app.post("/book/confirm", response_class=HTMLResponse)

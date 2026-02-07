@@ -1,37 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 
-<!-- NAVIGATION -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+<!-- =========================
+ NAVIGATION
+========================= -->
+<nav class="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
   <div class="max-w-6xl mx-auto px-5">
     <div class="flex items-center justify-between h-16 md:h-20">
-
-      <!-- Logo -->
       <a href="/" class="flex-shrink-0">
-        <img
-          src="{{ url_for('static', path='images/HGS-logo2.jpeg') }}"
-          alt="Hair Glow By Stash"
-          class="h-10 md:h-12 w-auto"
-        />
+        <img src="{{ url_for('static', path='images/HGS-logo2.jpeg') }}" class="h-10 md:h-12" alt="Hair Glow By Stash" />
       </a>
-
-      <!-- Desktop Menu -->
       <div class="hidden md:flex items-center gap-8">
         <a href="/" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Home</a>
         <a href="/#about" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">About</a>
         <a href="/#services" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Services</a>
         <a href="/#contact" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">Contact</a>
       </div>
-
-      <!-- Mobile Back -->
       <a href="/" class="md:hidden text-gray-700 hover:text-pink-600 font-medium">← Home</a>
-
     </div>
   </div>
 </nav>
 
-<!-- STEP 1: CATEGORIES (Main Page) -->
-<section class="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-24 md:pt-28 pb-16">
+<!-- =========================
+ STEP 1 – CATEGORIES (Main Page)
+========================= -->
+<section class="min-h-screen pt-24 md:pt-28 pb-16 bg-gradient-to-b from-gray-50 to-white">
   <div class="max-w-5xl mx-auto px-5">
 
     <!-- Header -->
@@ -44,135 +37,29 @@
     </div>
 
     <!-- Categories Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for cat in [
+        ("braids","Braids","Knotless, boho, stitch & sew-in styles"),
+        ("locs_twists","Locs & Twists","Marley twists, soft locs, invisible locs"),
+        ("ponytails","Ponytails","Braided and weave ponytails"),
+        ("lashes","Lashes","Classic and hybrid lash sets"),
+        ("nails","Nails","Gel X, builder gel, toes & designs"),
+        ("add_ons","Add-ons","Length, curls, ends & extras")
+      ] %}
       <button
-        type="button"
-        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
-        data-category="braids"
+        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 text-left hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+        data-category="{{ cat[0] }}"
         onclick="selectCategory(this)"
       >
         <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
           <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
           </svg>
         </div>
-        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Braids</h3>
-        <p class="text-sm md:text-base text-gray-600 mb-4">Knotless, boho, stitch & sew-in styles</p>
-        <div class="flex items-center text-pink-600 font-semibold">
-          <span>Explore</span>
-          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </div>
+        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">{{ cat[1] }}</h3>
+        <p class="text-sm md:text-base text-gray-600">{{ cat[2] }}</p>
       </button>
-
-      <button
-        type="button"
-        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
-        data-category="locs_twists"
-        onclick="selectCategory(this)"
-      >
-        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Locs & Twists</h3>
-        <p class="text-sm md:text-base text-gray-600 mb-4">Marley twists, soft locs, invisible locs</p>
-        <div class="flex items-center text-pink-600 font-semibold">
-          <span>Explore</span>
-          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </div>
-      </button>
-
-      <button
-        type="button"
-        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
-        data-category="ponytails"
-        onclick="selectCategory(this)"
-      >
-        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Ponytails</h3>
-        <p class="text-sm md:text-base text-gray-600 mb-4">Braided and weave ponytails</p>
-        <div class="flex items-center text-pink-600 font-semibold">
-          <span>Explore</span>
-          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </div>
-      </button>
-
-      <button
-        type="button"
-        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
-        data-category="lashes"
-        onclick="selectCategory(this)"
-      >
-        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Lashes</h3>
-        <p class="text-sm md:text-base text-gray-600 mb-4">Classic and hybrid lash sets</p>
-        <div class="flex items-center text-pink-600 font-semibold">
-          <span>Explore</span>
-          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </div>
-      </button>
-
-      <button
-        type="button"
-        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
-        data-category="nails"
-        onclick="selectCategory(this)"
-      >
-        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Nails</h3>
-        <p class="text-sm md:text-base text-gray-600 mb-4">Gel X, builder gel, toes & designs</p>
-        <div class="flex items-center text-pink-600 font-semibold">
-          <span>Explore</span>
-          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </div>
-      </button>
-
-      <button
-        type="button"
-        class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
-        data-category="add_ons"
-        onclick="selectCategory(this)"
-      >
-        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-          <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Add-ons</h3>
-        <p class="text-sm md:text-base text-gray-600 mb-4">Length, curls, ends & extras</p>
-        <div class="flex items-center text-pink-600 font-semibold">
-          <span>Explore</span>
-          <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </div>
-      </button>
-
+      {% endfor %}
     </div>
 
     <!-- Back Link -->
@@ -188,45 +75,189 @@
   </div>
 </section>
 
-<!-- MODAL -->
-<div id="bookingModal"
-     class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl relative max-h-[90vh] overflow-hidden flex flex-col">
+<!-- =========================
+ FULL-SCREEN MODAL
+========================= -->
+<div id="bookingModal" class="fixed inset-0 bg-white z-50 hidden overflow-hidden">
 
-    <!-- Modal Header -->
-    <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between flex-shrink-0">
-      <span id="stepIndicator" class="text-sm font-semibold text-gray-700">Step 2 of 4</span>
-      <button onclick="closeBookingModal()" class="text-gray-500 hover:text-gray-900 transition-colors">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+  <!-- Modal Header (Sticky) -->
+  <div class="sticky top-0 z-10 bg-white border-b border-gray-200 px-5 py-4">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+
+      <!-- Back Button (Left) -->
+      <button id="backButton" onclick="handleBack()" class="inline-flex items-center gap-2 text-gray-600 hover:text-pink-600 font-medium transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
+        <span class="hidden sm:inline">Back</span>
       </button>
+
+      <!-- Step Indicator (Center) -->
+      <div class="absolute left-1/2 transform -translate-x-1/2">
+        <span id="stepIndicator" class="text-sm md:text-base font-semibold text-gray-900">Step 2 of 4</span>
+      </div>
+
+      <!-- Timer / Close (Right) -->
+      <div class="flex items-center gap-4">
+        <span id="holdTimer" class="hidden text-sm md:text-base font-mono font-bold text-amber-600"></span>
+        <button onclick="closeBookingModal()" class="text-gray-500 hover:text-gray-900 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
     </div>
+  </div>
 
-    <!-- Modal Content (Scrollable) -->
-    <div class="overflow-y-auto flex-1">
+  <!-- Modal Content (Scrollable) -->
+  <div class="h-[calc(100vh-73px)] overflow-y-auto bg-gradient-to-b from-gray-50 to-white">
+    <div class="max-w-4xl mx-auto px-5 py-8 md:py-12">
 
-      <!-- STEP 2: Services -->
-      <div id="step-service" class="booking-step px-6 py-8">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6 capitalize" id="categoryTitle"></h2>
+      <!-- =========================
+       STEP 2 – SERVICES
+      ========================= -->
+      <div id="step-service" class="booking-step">
+        <h2 id="categoryTitle" class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-8"></h2>
         <div id="servicesList" class="space-y-4"></div>
       </div>
 
-      <!-- STEP 3: Date & Time -->
-      <div id="step-datetime" class="booking-step px-6 py-8 hidden">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Select Date & Time</h2>
-        <div id="datetimeContent"></div>
+      <!-- =========================
+       STEP 3 – DATE & TIME
+      ========================= -->
+      <div id="step-datetime" class="booking-step hidden">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-8">Select Date & Time</h2>
+
+        <!-- Date Picker -->
+        <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 mb-6 shadow-sm">
+          <label class="block text-sm font-semibold text-gray-700 mb-3">Choose a Date</label>
+          <input
+            type="date"
+            id="selectedDate"
+            class="w-full border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100 rounded-xl px-4 py-3 text-gray-900 font-medium transition-all outline-none"
+            min="{{ today }}"
+          />
+          <button
+            id="checkAvailabilityBtn"
+            onclick="loadTimes()"
+            disabled
+            class="mt-4 w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-3 md:py-4 rounded-xl font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Check Availability
+          </button>
+        </div>
+
+        <!-- Time Slots -->
+        <div id="timeSlotsContainer" class="hidden">
+          <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-4">Available Times</h3>
+          <div id="timeSlots" class="grid grid-cols-3 md:grid-cols-4 gap-3"></div>
+        </div>
       </div>
 
-      <!-- STEP 4: Confirm -->
-      <div id="step-confirm" class="booking-step px-6 py-8 hidden">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Confirm Booking</h2>
-        <div id="confirmContent"></div>
+      <!-- =========================
+       STEP 4 – CONFIRM
+      ========================= -->
+      <div id="step-confirm" class="booking-step hidden">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-8">Confirm Booking</h2>
+
+        <!-- Summary Card -->
+        <div class="bg-white border-2 border-pink-200 rounded-2xl p-6 md:p-8 mb-6 shadow-lg">
+          <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-4">Appointment Summary</h3>
+          <div class="space-y-3 text-gray-700">
+            <div class="flex justify-between pb-3 border-b border-gray-200">
+              <span class="font-medium">Service</span>
+              <strong id="cService" class="text-right"></strong>
+            </div>
+            <div class="flex justify-between pb-3 border-b border-gray-200">
+              <span class="font-medium">Date</span>
+              <strong id="cDate"></strong>
+            </div>
+            <div class="flex justify-between pb-3 border-b border-gray-200">
+              <span class="font-medium">Time</span>
+              <strong id="cTime"></strong>
+            </div>
+            <div class="flex justify-between pb-3 border-b border-gray-200">
+              <span class="font-medium">Duration</span>
+              <strong id="cDuration"></strong>
+            </div>
+            <div class="flex justify-between pt-2">
+              <span class="text-lg font-semibold">Deposit Required</span>
+              <span id="cDeposit" class="text-2xl font-bold text-pink-600">J$2,000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timer Warning -->
+        <div class="bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-2xl p-6 mb-6 text-center">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-amber-100 mb-3">
+            <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <p class="text-sm text-amber-800 font-semibold mb-2">Slot Reserved For</p>
+          <p id="holdTimerLarge" class="text-4xl font-bold text-amber-900 mb-3 font-mono">15:00</p>
+          <p class="text-xs text-amber-700">Send deposit within this time to secure your appointment</p>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 md:p-8 mb-6">
+          <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Next Steps
+          </h3>
+          <ol class="text-sm text-gray-700 space-y-2 list-decimal list-inside mb-6">
+            <li>Send your deposit via bank transfer</li>
+            <li>Forward the receipt to WhatsApp or Instagram</li>
+            <li>Your appointment will be confirmed once we receive it</li>
+          </ol>
+
+          <!-- Contact Buttons -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <a
+              id="whatsappLink"
+              href="#"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              WhatsApp
+            </a>
+            <a
+              href="https://instagram.com/hairglowbystash"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              Instagram
+            </a>
+          </div>
+        </div>
+
+        <!-- Banking Info -->
+        <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8">
+          <h3 class="font-bold text-gray-900 mb-4">Banking Information</h3>
+          <div class="space-y-2 text-sm text-gray-700">
+            <div class="flex justify-between"><span>Bank:</span><strong>NCB</strong></div>
+            <div class="flex justify-between"><span>Account Name:</span><strong>Shaneil Hayles</strong></div>
+            <div class="flex justify-between"><span>Branch:</span><strong>St Jago, Spanish Town</strong></div>
+            <div class="flex justify-between"><span>Account Type:</span><strong>Savings</strong></div>
+            <div class="flex justify-between"><span>Account #:</span><strong class="text-pink-600">474734943</strong></div>
+          </div>
+        </div>
+
       </div>
 
     </div>
-
   </div>
+
 </div>
 
 <!-- FOOTER -->
@@ -247,46 +278,33 @@
 
 <script>
 /* =========================
-   GLOBAL STATE
+ STATE (PRODUCTION-SAFE)
 ========================= */
 const bookingState = {
   category: null,
   service: null,
   date: null,
-  time: null
+  time: null,
+  currentStep: 1,
+  holdMinutes: 15,
+  timer: null,
+  startedAt: null
 };
 
-// Mock services data - replace with actual data from backend
-const services = {
-  braids: [
-    { id: 1, name: "Small Knotless Bontu / Mid Back", duration: 630, price: 9000 },
-    { id: 2, name: "Smedium Knotless Bontu / Mid Back", duration: 270, price: 8000 },
-    { id: 3, name: "Medium Knotless Bontu / Mid Back", duration: 210, price: 7000 }
-  ],
-  locs_twists: [
-    { id: 33, name: "5–6 Rows Invisible Locs", duration: 240, price: 8000 },
-    { id: 35, name: "Smedium Marley Twist Bob", duration: 270, price: 9000 }
-  ],
-  ponytails: [
-    { id: 31, name: "Braided Ponytail", duration: 120, price: 2500 },
-    { id: 32, name: "Weave Ponytail", duration: 150, price: 3000 }
-  ],
-  lashes: [
-    { id: 48, name: "Classic Cluster Lash", duration: 40, price: 1500 },
-    { id: 49, name: "Hybrid Lash", duration: 45, price: 2000 }
-  ],
-  nails: [
-    { id: 50, name: "Short Gel X – Solid Color", duration: 120, price: 3500 },
-    { id: 51, name: "Short Nails – French", duration: 150, price: 4500 }
-  ],
-  add_ons: [
-    { id: 39, name: "Add Curly Hair", duration: 90, price: 2000 },
-    { id: 40, name: "Bontu Ends", duration: 90, price: 1500 }
-  ]
-};
+// Services data injected from backend
+const services = {{ services_by_category | tojson | safe }};
 
 /* =========================
-   MODAL FUNCTIONS
+ STEP GUARDS (PREVENT INVALID NAVIGATION)
+========================= */
+function canGoToStep(step) {
+  if (step >= 3 && !bookingState.service) return false;
+  if (step >= 4 && (!bookingState.date || !bookingState.time)) return false;
+  return true;
+}
+
+/* =========================
+ MODAL FUNCTIONS
 ========================= */
 function openBookingModal() {
   document.getElementById("bookingModal").classList.remove("hidden");
@@ -294,149 +312,16 @@ function openBookingModal() {
 }
 
 function closeBookingModal() {
+  // Warn if hold is active
+  if (bookingState.startedAt) {
+    const ok = confirm("You have a reserved time slot. Closing will release it. Continue?");
+    if (!ok) return;
+    clearHold();
+  }
+
   document.getElementById("bookingModal").classList.add("hidden");
   document.body.style.overflow = "auto";
   resetBooking();
-}
-
-function goToStep(step) {
-  document.querySelectorAll(".booking-step").forEach(s => s.classList.add("hidden"));
-
-  const map = { 2: "step-service", 3: "step-datetime", 4: "step-confirm" };
-  document.getElementById(map[step]).classList.remove("hidden");
-  document.getElementById("stepIndicator").innerText = `Step ${step} of 4`;
-}
-
-/* =========================
-   STEP 1 → 2
-========================= */
-function selectCategory(el) {
-  bookingState.category = el.dataset.category;
-
-  // Update category title
-  document.getElementById("categoryTitle").textContent =
-    el.querySelector("h3").textContent;
-
-  // Load services for this category
-  loadServices();
-
-  openBookingModal();
-  goToStep(2);
-}
-
-function loadServices() {
-  const servicesList = document.getElementById("servicesList");
-  const categoryServices = services[bookingState.category] || [];
-
-  servicesList.innerHTML = categoryServices.map(service => `
-    <button
-      class="service-card block w-full bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-pink-400 hover:shadow-lg transition-all text-left"
-      data-service-id="${service.id}"
-      data-service-name="${service.name}"
-      data-service-duration="${service.duration}"
-      data-service-price="${service.price}"
-      onclick="selectService(this)"
-    >
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <h3 class="text-lg font-bold text-gray-900 mb-2">${service.name}</h3>
-          <p class="text-sm text-gray-600">
-            ${Math.floor(service.duration / 60)}h ${service.duration % 60 > 0 ? (service.duration % 60) + 'm' : ''}
-          </p>
-        </div>
-        <div class="text-2xl font-bold text-pink-600">
-          J$${service.price.toLocaleString()}
-        </div>
-      </div>
-    </button>
-  `).join('');
-}
-
-/* =========================
-   STEP 2 → 3
-========================= */
-function selectService(el) {
-  bookingState.service = {
-    id: el.dataset.serviceId,
-    name: el.dataset.serviceName,
-    duration: el.dataset.serviceDuration,
-    price: el.dataset.servicePrice
-  };
-
-  // Load datetime selection
-  loadDateTime();
-  goToStep(3);
-}
-
-function loadDateTime() {
-  const content = document.getElementById("datetimeContent");
-  content.innerHTML = `
-    <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 mb-6">
-      <h3 class="text-lg font-bold text-gray-900 mb-4">Choose Your Date</h3>
-      <input type="date" id="selectedDate" class="w-full border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100 rounded-xl px-4 py-3" min="${new Date().toISOString().split('T')[0]}">
-      <button onclick="checkAvailability()" class="mt-4 w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-3 rounded-xl font-semibold">Check Availability</button>
-    </div>
-    <div id="timeSlots" class="hidden">
-      <h3 class="text-lg font-bold text-gray-900 mb-4">Available Times</h3>
-      <div class="grid grid-cols-3 md:grid-cols-4 gap-3" id="timeSlotsGrid"></div>
-    </div>
-  `;
-}
-
-function checkAvailability() {
-  const date = document.getElementById("selectedDate").value;
-  if (!date) {
-    alert("Please select a date");
-    return;
-  }
-
-  bookingState.date = date;
-
-  // Mock time slots
-  const times = ["9:00 AM", "10:30 AM", "1:00 PM", "3:30 PM", "5:00 PM"];
-  const grid = document.getElementById("timeSlotsGrid");
-
-  grid.innerHTML = times.map(time => `
-    <button
-      class="time-slot border-2 border-gray-300 rounded-xl py-3 px-4 text-sm font-medium hover:border-pink-500 hover:bg-pink-50 transition-all"
-      data-time="${time}"
-      onclick="selectTime(this)"
-    >
-      ${time}
-    </button>
-  `).join('');
-
-  document.getElementById("timeSlots").classList.remove("hidden");
-}
-
-/* =========================
-   STEP 3 → 4
-========================= */
-function selectTime(el) {
-  bookingState.time = el.dataset.time;
-  loadConfirm();
-  goToStep(4);
-}
-
-function loadConfirm() {
-  const content = document.getElementById("confirmContent");
-  content.innerHTML = `
-    <div class="bg-white border-2 border-pink-200 rounded-2xl p-6 mb-6">
-      <h3 class="text-lg font-bold text-gray-900 mb-4">Appointment Summary</h3>
-      <div class="space-y-3 text-gray-700">
-        <div class="flex justify-between"><span>Service:</span><strong>${bookingState.service.name}</strong></div>
-        <div class="flex justify-between"><span>Date:</span><strong>${bookingState.date}</strong></div>
-        <div class="flex justify-between"><span>Time:</span><strong>${bookingState.time}</strong></div>
-        <div class="flex justify-between border-t pt-3"><span class="text-lg">Deposit Due:</span><strong class="text-xl text-pink-600">J$2,000</strong></div>
-      </div>
-    </div>
-    <form class="space-y-4">
-      <input type="text" placeholder="Full Name" required class="w-full border-2 border-gray-300 focus:border-pink-500 rounded-xl px-4 py-3">
-      <input type="tel" placeholder="Phone Number" required class="w-full border-2 border-gray-300 focus:border-pink-500 rounded-xl px-4 py-3">
-      <input type="email" placeholder="Email (optional)" class="w-full border-2 border-gray-300 focus:border-pink-500 rounded-xl px-4 py-3">
-      <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-4 rounded-xl font-bold text-lg">Complete Booking</button>
-    </form>
-  `;
 }
 
 function resetBooking() {
@@ -444,7 +329,320 @@ function resetBooking() {
   bookingState.service = null;
   bookingState.date = null;
   bookingState.time = null;
+  bookingState.currentStep = 1;
 }
+
+function goToStep(step) {
+  if (!canGoToStep(step)) {
+    console.warn(`Cannot go to step ${step}: missing required data`);
+    return;
+  }
+
+  bookingState.currentStep = step;
+  document.querySelectorAll(".booking-step").forEach(s => s.classList.add("hidden"));
+
+  const map = { 2: "step-service", 3: "step-datetime", 4: "step-confirm" };
+  document.getElementById(map[step]).classList.remove("hidden");
+  document.getElementById("stepIndicator").innerText = `Step ${step} of 4`;
+
+  // Show/hide timer in header based on step
+  if (step === 4 && bookingState.startedAt) {
+    document.getElementById("holdTimer").classList.remove("hidden");
+  } else {
+    document.getElementById("holdTimer").classList.add("hidden");
+  }
+}
+
+function handleBack() {
+  if (bookingState.currentStep === 2) {
+    closeBookingModal();
+  } else if (bookingState.currentStep === 3) {
+    goToStep(2);
+  } else if (bookingState.currentStep === 4) {
+    goToStep(3);
+  }
+}
+
+/* =========================
+ TIMER (PRODUCTION-SAFE)
+========================= */
+function startTimer() {
+  // Guard: prevent duplicate timers
+  if (bookingState.timer) return;
+
+  // Set startedAt only if not already set (survives back navigation)
+  bookingState.startedAt = bookingState.startedAt || Date.now();
+
+  document.getElementById("holdTimer").classList.remove("hidden");
+
+  bookingState.timer = setInterval(updateTimer, 1000);
+  updateTimer(); // Immediate paint
+}
+
+function updateTimer() {
+  const elapsed = Date.now() - bookingState.startedAt;
+  const remaining = bookingState.holdMinutes * 60000 - elapsed;
+
+  if (remaining <= 0) {
+    clearHold();
+    alert("Your 15-minute hold has expired. Please select a time again.");
+    goToStep(3);
+    return;
+  }
+
+  const m = Math.floor(remaining / 60000);
+  const s = Math.floor((remaining % 60000) / 1000);
+  const timeStr = `${m}:${s.toString().padStart(2, "0")}`;
+
+  const headerTimer = document.getElementById("holdTimer");
+  const largeTimer = document.getElementById("holdTimerLarge");
+
+  if (headerTimer) headerTimer.textContent = timeStr;
+  if (largeTimer) largeTimer.textContent = timeStr;
+}
+
+function clearHold() {
+  clearInterval(bookingState.timer);
+  bookingState.timer = null;
+  bookingState.startedAt = null;
+
+  const headerTimer = document.getElementById("holdTimer");
+  if (headerTimer) headerTimer.classList.add("hidden");
+}
+
+/* =========================
+ STEP 1 → 2 (CATEGORY SELECTION)
+========================= */
+function selectCategory(el) {
+  bookingState.category = el.dataset.category;
+  document.getElementById("categoryTitle").textContent = el.querySelector("h3").textContent;
+  loadServices();
+  openBookingModal();
+  goToStep(2);
+}
+
+/* =========================
+ PRICE LABEL HELPER (HANDLES VARIABLE PRICING)
+========================= */
+function getServicePriceLabel(service) {
+  if (service.variable_price) {
+    if (service.price_max) {
+      return `J$${service.price_min.toLocaleString()} - J$${service.price_max.toLocaleString()}`;
+    }
+    return `From J$${service.price_min.toLocaleString()}`;
+  }
+  return `J$${service.price.toLocaleString()}`;
+}
+
+function getServicePrice(service) {
+  // For booking purposes, use price_min for variable pricing
+  if (service.variable_price) {
+    return service.price_min;
+  }
+  return service.price;
+}
+
+function loadServices() {
+  const servicesList = document.getElementById("servicesList");
+  const categoryServices = services[bookingState.category] || [];
+
+  servicesList.innerHTML = categoryServices.map(s => `
+    <button
+      class="service-card block w-full bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 hover:border-pink-400 hover:shadow-lg transition-all text-left"
+      data-service-id="${s.id}"
+      onclick="selectServiceById('${s.id}')"
+    >
+      <div class="flex justify-between items-start gap-4">
+        <div class="flex-1">
+          <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-2">${s.name}</h3>
+          <p class="text-sm text-gray-600">${Math.floor(s.duration / 60)}h ${s.duration % 60 > 0 ? (s.duration % 60) + 'm' : ''}</p>
+        </div>
+        <div class="text-2xl font-bold text-pink-600">
+          ${getServicePriceLabel(s)}
+        </div>
+      </div>
+    </button>
+  `).join('');
+}
+
+/* =========================
+ STEP 2 → 3 (SERVICE SELECTION - ID-BASED)
+========================= */
+function selectServiceById(id) {
+  const serviceId = Number(id); // 🔑 FIX
+  const serviceList = services[bookingState.category] || [];
+  const service = serviceList.find(s => s.id === serviceId);
+
+  if (!service) {
+    console.error(`Service with ID ${id} not found`);
+    return;
+  }
+
+  bookingState.service = service;
+  goToStep(3);
+}
+
+
+/* =========================
+ STEP 3 - DATE INPUT HANDLER
+========================= */
+document.addEventListener('DOMContentLoaded', function() {
+  const dateInput = document.getElementById('selectedDate');
+  const checkBtn = document.getElementById('checkAvailabilityBtn');
+
+  if (dateInput && checkBtn) {
+    dateInput.addEventListener('change', function() {
+      checkBtn.disabled = !this.value;
+    });
+  }
+});
+
+/* =========================
+ STEP 3 → TIME SLOTS
+========================= */
+function loadTimes() {
+  const dateInput = document.getElementById("selectedDate");
+  if (!dateInput.value) {
+    alert("Please select a date");
+    return;
+  }
+
+  bookingState.date = dateInput.value;
+
+  // Mock time slots
+  const times = ["9:00 AM", "10:30 AM", "12:00 PM", "2:00 PM", "3:30 PM", "5:00 PM"];
+  const grid = document.getElementById("timeSlots");
+
+  grid.innerHTML = times.map(t => `
+    <button
+      class="time-slot border-2 border-gray-300 rounded-xl py-3 px-4 text-sm font-medium hover:border-pink-500 hover:bg-pink-50 transition-all"
+      onclick="selectTime('${t}')"
+    >
+      ${t}
+    </button>
+  `).join('');
+
+  document.getElementById("timeSlotsContainer").classList.remove("hidden");
+}
+
+/* =========================
+ STEP 3 → 4 (TIME SELECTION)
+========================= */
+function selectTime(time) {
+  bookingState.time = time;
+  startTimer();
+  fillConfirm();
+  goToStep(4);
+}
+
+/* =========================
+ STEP 4 – POPULATE CONFIRMATION
+========================= */
+function fillConfirm() {
+  document.getElementById("cService").textContent = bookingState.service.name;
+  document.getElementById("cDate").textContent = bookingState.date;
+  document.getElementById("cTime").textContent = bookingState.time;
+
+  // Duration
+  const duration = bookingState.service.duration;
+  const hours = Math.floor(duration / 60);
+  const mins = duration % 60;
+  document.getElementById("cDuration").textContent = `${hours}h ${mins > 0 ? mins + 'm' : ''}`;
+
+  // Dynamic deposit calculation (use price_min for variable pricing)
+  const price = getServicePrice(bookingState.service);
+  const deposit = Math.min(2000, price);
+  document.getElementById("cDeposit").textContent = `J$${deposit.toLocaleString()}`;
+
+  // Generate WhatsApp message
+  generateWhatsAppLink();
+}
+
+/* =========================
+ WHATSAPP DEEP LINK GENERATOR
+========================= */
+function generateWhatsAppLink() {
+  const price = getServicePrice(bookingState.service);
+  const deposit = Math.min(2000, price);
+
+  const message = `Hi! I'd like to book an appointment:
+
+*Service:* ${bookingState.service.name}
+*Date:* ${bookingState.date}
+*Time:* ${bookingState.time}
+*Deposit Due:* J$${deposit.toLocaleString()}
+
+I'm ready to send the deposit receipt.`;
+
+  const encoded = encodeURIComponent(message);
+  const whatsappLink = `https://wa.me/18765596826?text=${encoded}`;
+
+  document.getElementById("whatsappLink").href = whatsappLink;
+}
+
+/* =========================
+ BOOKING PAYLOAD (FUTURE-READY)
+========================= */
+function getBookingPayload() {
+  const price = getServicePrice(bookingState.service);
+  const deposit = Math.min(2000, price);
+
+  return {
+    category: bookingState.category,
+    service: {
+      id: bookingState.service.id,
+      name: bookingState.service.name,
+      price: price,
+      duration: bookingState.service.duration,
+      variable_price: bookingState.service.variable_price || false
+    },
+    date: bookingState.date,
+    time: bookingState.time,
+    deposit: deposit,
+    timestamp: new Date().toISOString()
+  };
+}
+
+// Example usage (for future backend integration):
+// fetch('/api/bookings', {
+//   method: 'POST',
+//   headers: { 'Content-Type': 'application/json' },
+//   body: JSON.stringify(getBookingPayload())
+// });
+
+/* =========================
+ QUERY PARAM HANDLER (AUTO-SELECT CATEGORY)
+========================= */
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if there's a category parameter in the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const category = urlParams.get('category');
+
+  if (category && services[category]) {
+    // Auto-select this category
+    bookingState.category = category;
+
+    // Set the category title
+    const categoryNames = {
+      braids: "Braids",
+      locs_twists: "Locs & Twists",
+      ponytails: "Ponytails",
+      lashes: "Lashes",
+      nails: "Nails",
+      add_ons: "Add-ons"
+    };
+
+    document.getElementById("categoryTitle").textContent = categoryNames[category] || category;
+
+    // Load services for this category
+    loadServices();
+
+    // Open modal and go to step 2
+    openBookingModal();
+    goToStep(2);
+  }
+});
+
 </script>
 
 {% endblock %}
