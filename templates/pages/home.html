@@ -2,6 +2,42 @@
 
 {% block content %}
 
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HairSalon",
+  "name": "Hair Glow By Stash",
+  "description": "Professional beauty salon specializing in braids, locs, nails, and lashes in Spanish Town, Jamaica",
+  "url": "https://www.hairglowbystash.com",
+  "telephone": "+18765596826",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Spanish Town",
+    "addressCountry": "JM"
+  },
+  "priceRange": "$$",
+  "image": "{{ url_for('static', path='images/HGS-logo.jpg') }}",
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Saturday"],
+      "opens": "16:00",
+      "closes": "23:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Thursday", "Friday"],
+      "opens": "06:00",
+      "closes": "23:00"
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/hairglowbystash"
+  ]
+}
+</script>
+
 <!-- NAVIGATION -->
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
   <div class="max-w-6xl mx-auto px-5">
@@ -179,6 +215,27 @@
 
 
 
+
+<!-- SOCIAL PROOF -->
+<section class="bg-gradient-to-b from-white to-gray-50 py-12 md:py-16 border-y border-gray-100">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="grid md:grid-cols-3 gap-8 text-center">
+      <div class="space-y-2">
+        <div class="text-4xl md:text-5xl font-bold text-pink-600">500+</div>
+        <p class="text-gray-600">Happy Clients</p>
+      </div>
+      <div class="space-y-2">
+        <div class="text-4xl md:text-5xl font-bold text-pink-600">5★</div>
+        <p class="text-gray-600">Average Rating</p>
+      </div>
+      <div class="space-y-2">
+        <div class="text-4xl md:text-5xl font-bold text-pink-600">100%</div>
+        <p class="text-gray-600">Satisfaction</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SERVICES SECTION -->
 <section id="services" class="scroll-mt-24 bg-white border-t border-gray-100">
   <div class="max-w-6xl mx-auto px-5 py-16 md:py-24">
@@ -276,24 +333,32 @@
           Book Now →
         </a>
       </div>
-
-      <!-- Add-ons -->
+      <!-- Wigs -->
       <div class="group bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-pink-300 transition-all duration-300">
         <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
           <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
         </div>
-        <h3 class="text-xl font-bold text-gray-900 mb-2">Add-ons</h3>
-        <p class="text-gray-600 text-sm mb-6">Length, curls, ends & extras</p>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Wigs</h3>
+        <p class="text-gray-600 text-sm mb-6">Frontal, closure & wig installs</p>
         <a
-          href="/book?category=add_ons"
+          href="/book?category=wigs"
           class="inline-block text-pink-600 font-semibold hover:text-pink-700 transition-colors"
         >
           Book Now →
         </a>
       </div>
 
+
+    </div>
+
+    <!-- Optional Add-ons Note -->
+    <div class="text-center mt-10">
+      <p class="text-sm text-gray-600">
+        <span class="font-semibold text-gray-900">Looking for add-ons?</span>
+        Customize your service with curls, length, designs & more during booking
+      </p>
     </div>
 
   </div>
@@ -316,7 +381,7 @@
           <img
             src="{{ url_for('static', path=img) }}"
             alt="Hair Glow By Stash work"
-            class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+            loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
@@ -450,6 +515,71 @@
   </div>
 </section>
 
+
+
+<!-- FAQ SECTION -->
+<section class="bg-white border-t border-gray-100 py-16 md:py-24">
+  <div class="max-w-4xl mx-auto px-5">
+
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Frequently Asked Questions</h2>
+      <div class="w-20 h-1 bg-gradient-to-r from-pink-500 to-pink-600 mx-auto rounded-full"></div>
+    </div>
+
+    <div class="space-y-4">
+      <details class="group bg-gray-50 rounded-xl p-6 cursor-pointer hover:bg-gray-100 transition-colors">
+        <summary class="font-semibold text-gray-900 flex items-center justify-between">
+          How do I book an appointment?
+          <svg class="w-5 h-5 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </summary>
+        <p class="text-gray-600 mt-4 text-sm">Click "Book Now" above, select your service, choose a date and time, then send your deposit via bank transfer or mobile money. Forward the receipt to WhatsApp or Instagram to confirm.</p>
+      </details>
+
+      <details class="group bg-gray-50 rounded-xl p-6 cursor-pointer hover:bg-gray-100 transition-colors">
+        <summary class="font-semibold text-gray-900 flex items-center justify-between">
+          How much is the deposit?
+          <svg class="w-5 h-5 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </summary>
+        <p class="text-gray-600 mt-4 text-sm">The deposit is J$2,000 or the full service price if under J$2,000. This secures your appointment and is deducted from your final payment.</p>
+      </details>
+
+      <details class="group bg-gray-50 rounded-xl p-6 cursor-pointer hover:bg-gray-100 transition-colors">
+        <summary class="font-semibold text-gray-900 flex items-center justify-between">
+          What is your cancellation policy?
+          <svg class="w-5 h-5 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </summary>
+        <p class="text-gray-600 mt-4 text-sm">Please cancel at least 24 hours in advance for a full refund. Same-day cancellations forfeit the deposit.</p>
+      </details>
+
+      <details class="group bg-gray-50 rounded-xl p-6 cursor-pointer hover:bg-gray-100 transition-colors">
+        <summary class="font-semibold text-gray-900 flex items-center justify-between">
+          Do you provide hair/extensions?
+          <svg class="w-5 h-5 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </summary>
+        <p class="text-gray-600 mt-4 text-sm">Yes! Extensions are included in most braid and loc services. Custom lengths and premium hair are available as add-ons.</p>
+      </details>
+
+      <details class="group bg-gray-50 rounded-xl p-6 cursor-pointer hover:bg-gray-100 transition-colors">
+        <summary class="font-semibold text-gray-900 flex items-center justify-between">
+          How long do appointments take?
+          <svg class="w-5 h-5 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </summary>
+        <p class="text-gray-600 mt-4 text-sm">Appointment times vary by service: nails 2-3 hours, lashes 30-45 mins, braids 3-10 hours depending on style and size. Exact durations are shown during booking.</p>
+      </details>
+    </div>
+
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer class="bg-black text-gray-400 border-t border-gray-800">

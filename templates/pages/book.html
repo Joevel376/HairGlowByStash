@@ -22,7 +22,7 @@
 </nav>
 
 <!-- =========================
- STEP 1 – CATEGORIES (Main Page)
+ STEP 1 – CATEGORIES (Main Page) - EXCLUDING ADD-ONS
 ========================= -->
 <section class="min-h-screen pt-24 md:pt-28 pb-16 bg-gradient-to-b from-gray-50 to-white">
   <div class="max-w-5xl mx-auto px-5">
@@ -36,7 +36,7 @@
       </p>
     </div>
 
-    <!-- Categories Grid -->
+    <!-- Categories Grid - EXCLUDING ADD-ONS -->
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for cat in [
         ("braids","Braids","Knotless, boho, stitch & sew-in styles"),
@@ -44,7 +44,7 @@
         ("ponytails","Ponytails","Braided and weave ponytails"),
         ("lashes","Lashes","Classic and hybrid lash sets"),
         ("nails","Nails","Gel X, builder gel, toes & designs"),
-        ("add_ons","Add-ons","Length, curls, ends & extras")
+        ("wigs","Wigs","Frontal, closure & wig installs")
       ] %}
       <button
         class="category-btn group bg-white border-2 border-gray-200 rounded-2xl p-8 text-left hover:border-pink-400 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
@@ -94,8 +94,22 @@
 
       <!-- Step Indicator (Center) -->
       <div class="absolute left-1/2 transform -translate-x-1/2">
-        <span id="stepIndicator" class="text-sm md:text-base font-semibold text-gray-900">Step 2 of 4</span>
+        <span id="stepIndicator" class="text-sm md:text-base font-semibold text-gray-900">Step 2 of 5</span>
       </div>
+
+  <!-- Progress Indicator -->
+  <div id="progressBar" class="sticky top-16 md:top-20 z-30 bg-white border-b border-gray-200 py-3 hidden">
+    <div class="max-w-4xl mx-auto px-5">
+      <div class="flex items-center justify-between mb-2 text-xs text-gray-600">
+        <span id="progressText">Step 1 of 5</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div id="progressFill" class="bg-gradient-to-r from-pink-500 to-pink-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
 
       <!-- Timer / Close (Right) -->
       <div class="flex items-center gap-4">
@@ -111,7 +125,10 @@
   </div>
 
   <!-- Modal Content (Scrollable) -->
-  <div class="h-[calc(100vh-73px)] overflow-y-auto bg-gradient-to-b from-gray-50 to-white">
+  <div
+  class="h-[calc(100vh-73px)] overflow-y-auto bg-gradient-to-b from-gray-50 to-white"
+  style="overflow-anchor: none;"
+  >
     <div class="max-w-4xl mx-auto px-5 py-8 md:py-12">
 
       <!-- =========================
@@ -123,137 +140,259 @@
       </div>
 
       <!-- =========================
-       STEP 3 – DATE & TIME
+       STEP 2.5 – ADD-ONS (NEW!)
+      ========================= -->
+      <div id="step-addons" class="booking-step hidden">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Optional Add-ons</h2>
+        <p class="text-gray-600 mb-8">Enhance your service with these optional extras</p>
+
+        <!-- Selected Service Summary -->
+        <div class="bg-white border-2 border-pink-200 rounded-2xl p-6 mb-8">
+          <p class="text-sm text-gray-600 mb-1">Selected Service</p>
+          <p class="text-lg font-bold text-gray-900" id="selectedServiceName"></p>
+        </div>
+
+        <!-- Add-ons List -->
+        <div id="addonsList" class="space-y-3 mb-8"></div>
+
+        <!-- Summary Box -->
+        <div class="bg-gradient-to-br from-pink-50 to-white border-2 border-pink-200 rounded-2xl p-6 mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <span class="font-semibold text-gray-900">Total Duration:</span>
+            <span class="font-bold text-pink-600" id="totalDuration">0h 0m</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="font-semibold text-gray-900">Estimated Price:</span>
+            <span class="font-bold text-pink-600 text-xl" id="totalPrice">J$0</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-3">*Variable pricing items will be confirmed during your appointment</p>
+        </div>
+
+        <!-- Continue Button -->
+        <button
+          type="button"
+          onclick="continueFromAddons()"
+          class="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all"
+        >
+          Continue to Date & Time
+        </button>
+
+        <!-- Skip Link -->
+        <div class="text-center mt-4">
+          <button type="button" onclick="continueFromAddons()" class="text-gray-600 hover:text-pink-600 text-sm font-medium">
+            Skip add-ons and continue →
+          </button>
+        </div>
+      </div>
+
+            <!-- =========================
+       STEP 3 – AUTO-PRIMING CALENDAR
       ========================= -->
       <div id="step-datetime" class="booking-step hidden">
         <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-8">Select Date & Time</h2>
 
-        <!-- Date Picker -->
-        <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 mb-6 shadow-sm">
-          <label class="block text-sm font-semibold text-gray-700 mb-3">Choose a Date</label>
-          <input
-            type="date"
-            id="selectedDate"
-            class="w-full border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-100 rounded-xl px-4 py-3 text-gray-900 font-medium transition-all outline-none"
-            min="{{ today }}"
-          />
-          <button
-            id="checkAvailabilityBtn"
-            onclick="loadTimes()"
-            disabled
-            class="mt-4 w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-3 md:py-4 rounded-xl font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Check Availability
-          </button>
-        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <!-- LEFT: Calendar -->
+          <div class="bg-white border-2 border-gray-200 rounded-2xl p-4 md:p-6 shadow-lg">
 
-        <!-- Time Slots -->
-        <div id="timeSlotsContainer" class="hidden">
-          <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-4">Available Times</h3>
-          <div id="timeSlots" class="grid grid-cols-3 md:grid-cols-4 gap-3"></div>
+            <!-- Calendar Header -->
+            <div class="flex items-center justify-between mb-6">
+              <button
+                id="prevMonth"
+                onclick="changeMonth(-1)"
+                class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+
+              <h3 id="calendarMonth" class="text-xl font-bold text-gray-900"></h3>
+
+              <button
+                id="nextMonth"
+                onclick="changeMonth(1)"
+                class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Weekday Headers -->
+            <div class="grid grid-cols-7 gap-1 md:gap-2 mb-2">
+              <div class="text-center text-xs font-semibold text-gray-600 py-2">Sun</div>
+              <div class="text-center text-xs font-semibold text-gray-600 py-2">Mon</div>
+              <div class="text-center text-xs font-semibold text-gray-600 py-2">Tue</div>
+              <div class="text-center text-xs font-semibold text-gray-600 py-2">Wed</div>
+              <div class="text-center text-xs font-semibold text-gray-600 py-2">Thu</div>
+              <div class="text-center text-xs font-semibold text-gray-600 py-2">Fri</div>
+              <div class="text-center text-xs font-semibold text-gray-600 py-2">Sat</div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div id="calendarGrid"
+                 class="grid grid-cols-7 gap-1 md:gap-2 mb-4 transition-all duration-300">
+
+              <!-- Days will be inserted here -->
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="calendarLoading" class="hidden text-center py-8">
+              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+              <p class="text-sm text-gray-600 mt-2">Checking availability...</p>
+            </div>
+
+            <!-- Legend -->
+            <div class="flex items-center gap-4 text-xs text-gray-600 mt-4 pt-4 border-t border-gray-200">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-pink-500 rounded"></span>
+                <span>Selected</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 border-2 border-gray-200 rounded relative">
+                  <span class="absolute bottom-0 right-0 w-1 h-1 bg-green-500 rounded-full"></span>
+                </span>
+                <span>Available</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-gray-100 rounded"></span>
+                <span>Unavailable</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Time Slots -->
+          <div id="timeSlotsContainer" class="hidden">
+            <div class="bg-gradient-to-br from-pink-50 to-white border-2 border-pink-200 rounded-2xl p-6 shadow-lg sticky top-4">
+              <h3 class="text-lg font-bold text-gray-900 mb-2">
+                Available Times
+              </h3>
+              <p class="text-sm text-gray-600 mb-6" id="selectedDateDisplay"></p>
+
+              <div id="timeSlots" class="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto"></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- =========================
-       STEP 4 – CONFIRM
-      ========================= -->
-      <div id="step-confirm" class="booking-step hidden">
-        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-8">Confirm Booking</h2>
+            <!-- =========================
+             STEP 4 – ENTER DETAILS
+            ========================= -->
+            <div id="step-details" class="booking-step hidden">
 
-        <!-- Summary Card -->
-        <div class="bg-white border-2 border-pink-200 rounded-2xl p-6 md:p-8 mb-6 shadow-lg">
-          <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-4">Appointment Summary</h3>
-          <div class="space-y-3 text-gray-700">
-            <div class="flex justify-between pb-3 border-b border-gray-200">
-              <span class="font-medium">Service</span>
-              <strong id="cService" class="text-right"></strong>
+              <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-8">
+                Enter Your Details
+              </h2>
+
+              <div class="grid lg:grid-cols-2 gap-8">
+
+                <!-- LEFT SIDE – CLIENT DETAILS -->
+                <div class="space-y-6">
+
+                  <!-- Hold Notice -->
+                  <div class="bg-amber-50 border-2 border-amber-300 rounded-xl p-4">
+                    <p class="text-sm text-amber-800 font-semibold">
+                      We'll hold this time slot for 10 minutes.
+                    </p>
+                    <p id="holdTimerLarge" class="text-3xl font-mono font-bold text-amber-900 mt-2">
+                      10:00
+                    </p>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+                    <input id="clientName" type="text"
+                      class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:border-pink-500 focus:outline-none"
+                      required />
+                  </div>
+
+                  <!-- Phone -->
+                    <div>
+                      <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Phone Number *
+                      </label>
+
+                      <div class="w-full">
+                        <input
+                          type="tel"
+                          id="phone"
+                          class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:border-pink-500 focus:outline-none"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                      <input id="clientEmail" type="email"
+                      class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:border-pink-500 focus:outline-none"
+                      required />
+                    </div>
+
+                    <!-- Special Notes -->
+                    <div>
+                      <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Special Notes / Requests
+                      </label>
+                      <textarea
+                        id="clientNotes"
+                        rows="4"
+                        placeholder="Any specific requests or information we should know..."
+                        class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-pink-500 focus:outline-none resize-none"
+                      ></textarea>
+                    </div>
+
+
+                </div>
+
+                <!-- RIGHT SIDE – SUMMARY + AGREEMENT -->
+                <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 shadow-lg space-y-6">
+
+                  <div>
+                    <h3 class="font-bold text-gray-900 mb-4">Booking Summary</h3>
+                    <div class="space-y-2 text-sm text-gray-700">
+                      <div class="flex justify-between">
+                        <span>Service</span>
+                        <strong id="summaryService"></strong>
+                      </div>
+                      <div class="flex justify-between">
+                        <span>Date</span>
+                        <strong id="summaryDate"></strong>
+                      </div>
+                      <div class="flex justify-between">
+                        <span>Time</span>
+                        <strong id="summaryTime"></strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start gap-3">
+                    <input id="agreePolicy" type="checkbox"
+                      class="mt-1 w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500" />
+                    <label for="agreePolicy" class="text-sm text-gray-700">
+                      I have read and agree to the
+                      <a href="/policies" target="_blank" class="text-pink-600 font-semibold underline">
+                        Hair Glow By Stash Salon Policy & Terms
+                      </a>
+                    </label>
+                  </div>
+
+                  <button
+                    id="completeBookingBtn"
+                    type="button"
+                    onclick="submitBooking()"
+                    class="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg transition-all"
+                  >
+                    Complete Booking
+                  </button>
+
+                </div>
+
+              </div>
             </div>
-            <div class="flex justify-between pb-3 border-b border-gray-200">
-              <span class="font-medium">Date</span>
-              <strong id="cDate"></strong>
-            </div>
-            <div class="flex justify-between pb-3 border-b border-gray-200">
-              <span class="font-medium">Time</span>
-              <strong id="cTime"></strong>
-            </div>
-            <div class="flex justify-between pb-3 border-b border-gray-200">
-              <span class="font-medium">Duration</span>
-              <strong id="cDuration"></strong>
-            </div>
-            <div class="flex justify-between pt-2">
-              <span class="text-lg font-semibold">Deposit Required</span>
-              <span id="cDeposit" class="text-2xl font-bold text-pink-600">J$2,000</span>
-            </div>
-          </div>
-        </div>
 
-        <!-- Timer Warning -->
-        <div class="bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-2xl p-6 mb-6 text-center">
-          <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-amber-100 mb-3">
-            <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <p class="text-sm text-amber-800 font-semibold mb-2">Slot Reserved For</p>
-          <p id="holdTimerLarge" class="text-4xl font-bold text-amber-900 mb-3 font-mono">15:00</p>
-          <p class="text-xs text-amber-700">Send deposit within this time to secure your appointment</p>
-        </div>
-
-        <!-- Instructions -->
-        <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 md:p-8 mb-6">
-          <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            Next Steps
-          </h3>
-          <ol class="text-sm text-gray-700 space-y-2 list-decimal list-inside mb-6">
-            <li>Send your deposit via bank transfer</li>
-            <li>Forward the receipt to WhatsApp or Instagram</li>
-            <li>Your appointment will be confirmed once we receive it</li>
-          </ol>
-
-          <!-- Contact Buttons -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <a
-              id="whatsappLink"
-              href="#"
-              target="_blank"
-              rel="noopener"
-              class="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
-            >
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-              </svg>
-              WhatsApp
-            </a>
-            <a
-              href="https://instagram.com/hairglowbystash"
-              target="_blank"
-              rel="noopener"
-              class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
-            >
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              Instagram
-            </a>
-          </div>
-        </div>
-
-        <!-- Banking Info -->
-        <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8">
-          <h3 class="font-bold text-gray-900 mb-4">Banking Information</h3>
-          <div class="space-y-2 text-sm text-gray-700">
-            <div class="flex justify-between"><span>Bank:</span><strong>NCB</strong></div>
-            <div class="flex justify-between"><span>Account Name:</span><strong>Shaneil Hayles</strong></div>
-            <div class="flex justify-between"><span>Branch:</span><strong>St Jago, Spanish Town</strong></div>
-            <div class="flex justify-between"><span>Account Type:</span><strong>Savings</strong></div>
-            <div class="flex justify-between"><span>Account #:</span><strong class="text-pink-600">474734943</strong></div>
-          </div>
-        </div>
-
-      </div>
 
     </div>
   </div>
@@ -283,16 +422,18 @@
 const bookingState = {
   category: null,
   service: null,
+  addons: [],           // NEW: Array of selected add-ons
   date: null,
   time: null,
   currentStep: 1,
-  holdMinutes: 15,
+  holdMinutes: 10,
   timer: null,
   startedAt: null
 };
 
 // Services data injected from backend
 const services = {{ services_by_category | tojson | safe }};
+
 
 /* =========================
  STEP GUARDS (PREVENT INVALID NAVIGATION)
@@ -327,6 +468,7 @@ function closeBookingModal() {
 function resetBooking() {
   bookingState.category = null;
   bookingState.service = null;
+  bookingState.addons = [];
   bookingState.date = null;
   bookingState.time = null;
   bookingState.currentStep = 1;
@@ -341,9 +483,37 @@ function goToStep(step) {
   bookingState.currentStep = step;
   document.querySelectorAll(".booking-step").forEach(s => s.classList.add("hidden"));
 
-  const map = { 2: "step-service", 3: "step-datetime", 4: "step-confirm" };
+  const map = {
+    2: "step-service",
+    2.5: "step-addons",
+    3: "step-datetime",
+    4: "step-details"
+  };
+
   document.getElementById(map[step]).classList.remove("hidden");
-  document.getElementById("stepIndicator").innerText = `Step ${step} of 4`;
+
+  // Update step indicator
+  const stepLabels = {
+    2: "Step 2 of 5",
+    2.5: "Step 3 of 5",
+    3: "Step 4 of 5",
+    4: "Step 5 of 5"
+  };
+  document.getElementById("stepIndicator").innerText = stepLabels[step];
+
+  // Update progress bar
+  updateProgressBar(step);
+
+  // Initialize calendar when entering Step 3
+  if (step === 3) {
+    initCalendar();
+  }
+
+  // Lock slot and start timer when entering Step 4
+  if (step === 4) {
+    fillDetailsSummary();
+    awaitLockThenStartTimer();
+  }
 
   // Show/hide timer in header based on step
   if (step === 4 && bookingState.startedAt) {
@@ -353,12 +523,26 @@ function goToStep(step) {
   }
 }
 
+async function awaitLockThenStartTimer() {
+  const success = await lockSelectedSlot();
+  if (success) {
+    startTimer();
+  } else {
+    goToStep(3);
+  }
+}
+
+
 function handleBack() {
   if (bookingState.currentStep === 2) {
     closeBookingModal();
-  } else if (bookingState.currentStep === 3) {
+  } else if (bookingState.currentStep === 2.5) {
     goToStep(2);
+  } else if (bookingState.currentStep === 3) {
+    goToStep(2.5);
   } else if (bookingState.currentStep === 4) {
+    // Release slot when going back from confirmation
+    clearHold();
     goToStep(3);
   }
 }
@@ -384,9 +568,7 @@ function updateTimer() {
   const remaining = bookingState.holdMinutes * 60000 - elapsed;
 
   if (remaining <= 0) {
-    clearHold();
-    alert("Your 15-minute hold has expired. Please select a time again.");
-    goToStep(3);
+    showHoldExpiredModal();
     return;
   }
 
@@ -448,6 +630,7 @@ function loadServices() {
 
   servicesList.innerHTML = categoryServices.map(s => `
     <button
+      type="button"
       class="service-card block w-full bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 hover:border-pink-400 hover:shadow-lg transition-all text-left"
       data-service-id="${s.id}"
       onclick="selectServiceById('${s.id}')"
@@ -466,7 +649,7 @@ function loadServices() {
 }
 
 /* =========================
- STEP 2 → 3 (SERVICE SELECTION - ID-BASED)
+ STEP 2 → 2.5 (SERVICE SELECTION - ID-BASED)
 ========================= */
 function selectServiceById(id) {
   const serviceId = Number(id); // 🔑 FIX
@@ -479,170 +662,966 @@ function selectServiceById(id) {
   }
 
   bookingState.service = service;
-  goToStep(3);
+  bookingState.addons = []; // reset add-ons on service change
+  loadAddons();
+  goToStep(2.5);
 }
 
 
 /* =========================
- STEP 3 - DATE INPUT HANDLER
+ STEP 2.5 – ADD-ONS (SMART FILTERING)
 ========================= */
-document.addEventListener('DOMContentLoaded', function() {
-  const dateInput = document.getElementById('selectedDate');
-  const checkBtn = document.getElementById('checkAvailabilityBtn');
+function loadAddons() {
+  // Update selected service display
+  document.getElementById("selectedServiceName").textContent = bookingState.service.name;
 
-  if (dateInput && checkBtn) {
-    dateInput.addEventListener('change', function() {
-      checkBtn.disabled = !this.value;
-    });
-  }
-});
+  const addonsList = document.getElementById("addonsList");
+  const service = bookingState.service;
 
-/* =========================
- STEP 3 → TIME SLOTS
-========================= */
-function loadTimes() {
-  const dateInput = document.getElementById("selectedDate");
-  if (!dateInput.value) {
-    alert("Please select a date");
+  // Check if service allows any add-ons
+  if (!service.allowed_addons || service.allowed_addons.length === 0) {
+    addonsList.innerHTML = '<p class="text-gray-600 text-center py-8">No add-ons available for this service</p>';
     return;
   }
 
-  bookingState.date = dateInput.value;
+  // Filter add-ons by allowed types
+  const allowedTypes = service.allowed_addons;
+  const allAddons = services["add_ons"] || [];
 
-  // Mock time slots
-  const times = ["9:00 AM", "10:30 AM", "12:00 PM", "2:00 PM", "3:30 PM", "5:00 PM"];
+  const filteredAddons = allAddons.filter(addon =>
+    allowedTypes.includes(addon.addon_type)
+  );
+
+  if (filteredAddons.length === 0) {
+    addonsList.innerHTML = '<p class="text-gray-600 text-center py-8">No add-ons available</p>';
+    return;
+  }
+
+  // Render filtered add-ons
+  addonsList.innerHTML = filteredAddons.map(addon => {
+    const isRequired = service.required_addons && service.required_addons.includes(addon.id);
+    const isDisabled = isRequired ? 'disabled' : '';
+    const isChecked = isRequired ? 'checked' : '';
+    const requiredLabel = isRequired ? '<span class="text-xs text-amber-600 font-medium ml-2">(Required)</span>' : '';
+
+    return `
+      <label class="flex items-start gap-4 bg-white border-2 ${isRequired ? 'border-amber-300 bg-amber-50' : 'border-gray-200'} rounded-xl p-4 cursor-pointer hover:border-pink-300 transition-all group">
+        <input
+          type="checkbox"
+          ${isChecked}
+          ${isDisabled}
+          class="addon-checkbox mt-1 w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+          data-addon-id="${addon.id}"
+          onchange="toggleAddon(${addon.id})"
+        />
+        <div class="flex-1">
+          <h4 class="font-semibold text-gray-900 group-hover:text-pink-600 transition-colors">
+            ${addon.name}${requiredLabel}
+          </h4>
+          <p class="text-sm text-gray-600">${Math.floor(addon.duration / 60)}h ${addon.duration % 60 > 0 ? (addon.duration % 60) + 'm' : ''}</p>
+        </div>
+        <div class="text-right">
+          <p class="font-bold text-pink-600">${getServicePriceLabel(addon)}</p>
+        </div>
+      </label>
+    `;
+  }).join('');
+
+  // Auto-select required add-ons
+  if (service.required_addons) {
+    service.required_addons.forEach(addonId => {
+      const addon = allAddons.find(a => a.id === addonId);
+      if (addon && !bookingState.addons.find(a => a.id === addonId)) {
+        bookingState.addons.push(addon);
+      }
+    });
+  }
+
+  updateAddonsSummary();
+}
+
+function toggleAddon(addonId) {
+  const allAddons = services["add_ons"] || [];
+  const addon = allAddons.find(a => a.id === addonId);
+  if (!addon) return;
+
+  // Prevent unchecking required add-ons
+  const isRequired = bookingState.service.required_addons &&
+                     bookingState.service.required_addons.includes(addonId);
+  if (isRequired) return;
+
+  const index = bookingState.addons.findIndex(a => a.id === addonId);
+
+  if (index > -1) {
+    // Remove addon
+    bookingState.addons.splice(index, 1);
+  } else {
+    // Add addon
+    bookingState.addons.push(addon);
+  }
+
+  updateAddonsSummary();
+}
+
+
+function updateAddonsSummary() {
+  // Calculate total duration
+  let totalMinutes = bookingState.service.duration;
+  bookingState.addons.forEach(addon => {
+    totalMinutes += addon.duration;
+  });
+
+  const hours = Math.floor(totalMinutes / 60);
+  const mins = totalMinutes % 60;
+  document.getElementById("totalDuration").textContent = `${hours}h ${mins > 0 ? mins + 'm' : ''}`;
+
+  // Calculate total price (minimum for variable pricing)
+  let totalPrice = getServicePrice(bookingState.service);
+  let hasVariablePrice = bookingState.service.variable_price;
+
+  bookingState.addons.forEach(addon => {
+    totalPrice += getServicePrice(addon);
+    if (addon.variable_price) hasVariablePrice = true;
+  });
+
+  document.getElementById("totalPrice").textContent = hasVariablePrice
+    ? `From J$${totalPrice.toLocaleString()}`
+    : `J$${totalPrice.toLocaleString()}`;
+}
+
+function continueFromAddons() {
+  goToStep(3);
+}
+
+/* =========================
+ STEP 3 – PREMIUM CALENDAR (STABLE + ANIMATED)
+========================= */
+
+const calendarState = {
+  month: new Date().getMonth(),
+  year: new Date().getFullYear(),
+  selectedDate: null,
+  availability: {},
+  slideDirection: 1, // 1 = forward, -1 = backward
+};
+
+async function initCalendar() {
+  calendarState.availability = {};
+  calendarState.selectedDate = null;
+  await renderCalendar(true);
+}
+
+async function changeMonth(delta) {
+  calendarState.slideDirection = delta;
+
+  calendarState.month += delta;
+  if (calendarState.month > 11) {
+    calendarState.month = 0;
+    calendarState.year++;
+  }
+  if (calendarState.month < 0) {
+    calendarState.month = 11;
+    calendarState.year--;
+  }
+
+  await renderCalendar(false);
+}
+
+async function renderCalendar(isInitial) {
+  const grid = document.getElementById("calendarGrid");
+  grid.classList.add("opacity-0","translate-x-4");
+
+  requestAnimationFrame(() => {
+     grid.classList.remove("opacity-0","translate-x-4");
+     grid.classList.add("opacity-100","translate-x-0");
+  });
+
+  const loading = document.getElementById("calendarLoading");
+
+  // Animate OUT
+  if (!isInitial) {
+    grid.classList.add(
+      "opacity-0",
+      calendarState.slideDirection === 1 ? "translate-x-4" : "-translate-x-4"
+    );
+    await wait(200);
+  }
+
+  grid.innerHTML = "";
+  loading.classList.remove("hidden");
+
+  const monthNames = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ];
+
+  document.getElementById("calendarMonth").textContent =
+    `${monthNames[calendarState.month]} ${calendarState.year}`;
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const firstDay = new Date(calendarState.year, calendarState.month, 1);
+  const lastDay = new Date(calendarState.year, calendarState.month + 1, 0);
+
+  // Leading blanks
+  for (let i = 0; i < firstDay.getDay(); i++) {
+    grid.appendChild(document.createElement("div"));
+  }
+
+  // Fetch availability in parallel
+  await Promise.all(
+    Array.from({ length: lastDay.getDate() }, (_, i) => {
+      const d = new Date(calendarState.year, calendarState.month, i + 1);
+      if (d >= today) return fetchAvailability(formatDate(d));
+    })
+  );
+
+  // Render days
+  for (let day = 1; day <= lastDay.getDate(); day++) {
+    const date = new Date(calendarState.year, calendarState.month, day);
+    const dateStr = formatDate(date);
+    const isPast = date < today;
+    const dayData = calendarState.availability[dateStr];
+
+    const btn = document.createElement("button");
+    btn.textContent = day;
+    btn.dataset.date = dateStr;
+    btn.className =
+      "aspect-square rounded-lg flex items-center justify-center text-sm font-medium border-2 transition-all";
+
+    if (isPast) {
+      btn.classList.add("bg-gray-50","text-gray-300","cursor-not-allowed");
+      btn.disabled = true;
+    } else if (dayData && dayData.slots.length > 0) {
+      btn.classList.add("border-gray-200","hover:bg-pink-50","cursor-pointer","relative");
+      btn.onclick = () => selectDate(dateStr);
+
+      const dot = document.createElement("span");
+      dot.className = "absolute bottom-1 w-1.5 h-1.5 bg-green-500 rounded-full";
+      btn.appendChild(dot);
+    } else {
+      btn.classList.add("bg-gray-100","text-gray-300","cursor-not-allowed");
+      btn.disabled = true;
+    }
+
+    if (calendarState.selectedDate === dateStr) {
+      btn.classList.add("bg-pink-500","text-white","border-pink-500");
+    }
+
+    grid.appendChild(btn);
+  }
+
+  loading.classList.add("hidden");
+
+  autoSelectFirstAvailable();
+}
+
+async function fetchAvailability(dateStr) {
+  let duration = bookingState.service.duration;
+  bookingState.addons.forEach(a => duration += a.duration);
+
+  try {
+    const res = await fetch(`/api/availability?date=${dateStr}&duration=${duration}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json(); // expects {slots:[...]}
+    calendarState.availability[dateStr] = { slots: (data.slots || []) };
+  } catch (e) {
+    console.error("availability error", dateStr, e);
+    calendarState.availability[dateStr] = { slots: [] };
+  }
+}
+
+function autoSelectFirstAvailable() {
+  if (calendarState.selectedDate) return;
+
+  const dates = Object.entries(calendarState.availability)
+    .filter(([_, v]) => v.slots.length > 0)
+    .sort(([a],[b]) => a.localeCompare(b));
+
+  if (dates.length) {
+    selectDate(dates[0][0], true);
+  }
+}
+
+function selectDate(dateStr, auto=false) {
+  calendarState.selectedDate = dateStr;
+  bookingState.date = dateStr;
+
+  document.querySelectorAll("#calendarGrid button").forEach(b =>
+    b.classList.remove("bg-pink-500","text-white","border-pink-500")
+  );
+
+  const btn = document.querySelector(`[data-date="${dateStr}"]`);
+  if (btn) btn.classList.add("bg-pink-500","text-white","border-pink-500");
+
+  showTimeSlots(dateStr);
+}
+
+function showTimeSlots(dateStr) {
+  const slots = calendarState.availability[dateStr].slots;
   const grid = document.getElementById("timeSlots");
+  const container = document.getElementById("timeSlotsContainer");
+  const label = document.getElementById("selectedDateDisplay");
 
-  grid.innerHTML = times.map(t => `
+  const [y, m, d] = dateStr.split("-").map(Number);
+  label.textContent = new Date(y, m - 1, d).toDateString();
+
+  grid.innerHTML = slots.map(t => `
     <button
-      class="time-slot border-2 border-gray-300 rounded-xl py-3 px-4 text-sm font-medium hover:border-pink-500 hover:bg-pink-50 transition-all"
+      type="button"
+      class="border-2 border-gray-300 rounded-xl py-3 px-4 text-sm font-medium hover:border-pink-500 hover:bg-pink-50 transition-all"
       onclick="selectTime('${t}')"
     >
       ${t}
     </button>
-  `).join('');
+  `).join("");
 
-  document.getElementById("timeSlotsContainer").classList.remove("hidden");
+  container.classList.remove("hidden");
+  addUrgencyIndicator(slots);
 }
 
-/* =========================
- STEP 3 → 4 (TIME SELECTION)
-========================= */
 function selectTime(time) {
+  console.log("selectTime called with:", time);
+  console.log("Current bookingState.date:", bookingState.date);
+  console.log("Current bookingState.service:", bookingState.service);
+
   bookingState.time = time;
-  startTimer();
-  fillConfirm();
-  goToStep(4);
+
+  document.querySelectorAll("#timeSlots button").forEach(b => {
+    b.classList.remove("bg-pink-500", "text-white", "border-pink-500");
+  });
+
+  const selectedBtn = Array.from(document.querySelectorAll("#timeSlots button"))
+    .find(btn => btn.textContent.trim() === time);
+
+  if (selectedBtn) {
+    selectedBtn.classList.add("bg-pink-500", "text-white", "border-pink-500");
+  }
+
+  console.log("About to call goToStep(4)");
+  goToStep(4); // timer + lock handled inside goToStep
+}
+
+
+
+function formatDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function wait(ms) {
+  return new Promise(res => setTimeout(res, ms));
 }
 
 /* =========================
- STEP 4 – POPULATE CONFIRMATION
+ PROGRESS BAR
 ========================= */
-function fillConfirm() {
-  document.getElementById("cService").textContent = bookingState.service.name;
-  document.getElementById("cDate").textContent = bookingState.date;
-  document.getElementById("cTime").textContent = bookingState.time;
+function updateProgressBar(step) {
+  const progressBar = document.getElementById("progressBar");
+  const progressText = document.getElementById("progressText");
+  const progressPercent = document.getElementById("progressPercent");
+  const progressFill = document.getElementById("progressFill");
 
-  // Duration
-  const duration = bookingState.service.duration;
-  const hours = Math.floor(duration / 60);
-  const mins = duration % 60;
-  document.getElementById("cDuration").textContent = `${hours}h ${mins > 0 ? mins + 'm' : ''}`;
+  // Show progress bar when in modal
+  if (step >= 2) {
+    progressBar.classList.remove("hidden");
+  }
 
-  // Dynamic deposit calculation (use price_min for variable pricing)
-  const price = getServicePrice(bookingState.service);
-  const deposit = Math.min(2000, price);
-  document.getElementById("cDeposit").textContent = `J$${deposit.toLocaleString()}`;
-
-  // Generate WhatsApp message
-  generateWhatsAppLink();
-}
-
-/* =========================
- WHATSAPP DEEP LINK GENERATOR
-========================= */
-function generateWhatsAppLink() {
-  const price = getServicePrice(bookingState.service);
-  const deposit = Math.min(2000, price);
-
-  const message = `Hi! I'd like to book an appointment:
-
-*Service:* ${bookingState.service.name}
-*Date:* ${bookingState.date}
-*Time:* ${bookingState.time}
-*Deposit Due:* J$${deposit.toLocaleString()}
-
-I'm ready to send the deposit receipt.`;
-
-  const encoded = encodeURIComponent(message);
-  const whatsappLink = `https://wa.me/18765596826?text=${encoded}`;
-
-  document.getElementById("whatsappLink").href = whatsappLink;
-}
-
-/* =========================
- BOOKING PAYLOAD (FUTURE-READY)
-========================= */
-function getBookingPayload() {
-  const price = getServicePrice(bookingState.service);
-  const deposit = Math.min(2000, price);
-
-  return {
-    category: bookingState.category,
-    service: {
-      id: bookingState.service.id,
-      name: bookingState.service.name,
-      price: price,
-      duration: bookingState.service.duration,
-      variable_price: bookingState.service.variable_price || false
-    },
-    date: bookingState.date,
-    time: bookingState.time,
-    deposit: deposit,
-    timestamp: new Date().toISOString()
+  const stepMap = {
+    2: { text: "Service Selection", percent: 20 },
+    2.5: { text: "Add-ons", percent: 40 },
+    3: { text: "Date & Time", percent: 60 },
+    4: { text: "Confirm Booking", percent: 80 }
   };
+
+  const data = stepMap[step];
+  if (data) {
+    progressText.textContent = data.text;
+    progressPercent.textContent = data.percent + "%";
+    progressFill.style.width = data.percent + "%";
+  }
 }
 
-// Example usage (for future backend integration):
-// fetch('/api/bookings', {
-//   method: 'POST',
-//   headers: { 'Content-Type': 'application/json' },
-//   body: JSON.stringify(getBookingPayload())
-// });
+/* =========================
+ ERROR HANDLING & RETRY
+========================= */
+async function fetchWithRetry(url, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok && i < retries - 1) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+
+function showToast(message, type = 'info') {
+  const toast = document.createElement('div');
+  toast.className = `fixed bottom-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white transform transition-all duration-300 ${
+    type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+  }`;
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.transform = 'translateY(100px)';
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
 
 /* =========================
- QUERY PARAM HANDLER (AUTO-SELECT CATEGORY)
+ KEYBOARD NAVIGATION
 ========================= */
-document.addEventListener('DOMContentLoaded', function() {
-  // Check if there's a category parameter in the URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const category = urlParams.get('category');
+document.addEventListener('keydown', function(e) {
+  // ESC to close modal
+  if (e.key === 'Escape' && bookingState.currentStep >= 2) {
+    closeBookingModal();
+  }
 
-  if (category && services[category]) {
-    // Auto-select this category
-    bookingState.category = category;
-
-    // Set the category title
-    const categoryNames = {
-      braids: "Braids",
-      locs_twists: "Locs & Twists",
-      ponytails: "Ponytails",
-      lashes: "Lashes",
-      nails: "Nails",
-      add_ons: "Add-ons"
-    };
-
-    document.getElementById("categoryTitle").textContent = categoryNames[category] || category;
-
-    // Load services for this category
-    loadServices();
-
-    // Open modal and go to step 2
-    openBookingModal();
-    goToStep(2);
+  // Arrow keys for calendar
+  if (bookingState.currentStep === 3) {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      changeMonth(-1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      changeMonth(1);
+    }
   }
 });
 
+
+/* =========================
+ MOBILE TOUCH OPTIMIZATION
+========================= */
+let touchStartX = 0;
+let touchEndX = 0;
+
+function handleCalendarSwipe() {
+  const threshold = 50;
+  const diff = touchStartX - touchEndX;
+
+  if (Math.abs(diff) > threshold) {
+    if (diff > 0) {
+      // Swipe left - next month
+      changeMonth(1);
+    } else {
+      // Swipe right - previous month
+      changeMonth(-1);
+    }
+  }
+}
+
+// Add touch listeners to calendar on init
+document.addEventListener('DOMContentLoaded', function() {
+  const calendarGrid = document.getElementById('calendarGrid');
+  if (calendarGrid) {
+    calendarGrid.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    calendarGrid.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleCalendarSwipe();
+    }, { passive: true });
+  }
+});
+
+/* =========================
+ BETTER MOBILE TAP TARGETS
+========================= */
+// Ensure calendar cells are at least 44x44px (Apple HIG guideline)
+const style = document.createElement('style');
+style.textContent = `
+  @media (max-width: 768px) {
+    #calendarGrid button {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    .time-slot {
+      min-height: 48px;
+    }
+  }
+`;
+document.head.appendChild(style);
+
+    function addUrgencyIndicator(slots) {
+      const container = document.getElementById("timeSlotsContainer");
+
+      // Remove existing urgency message
+      const existing = container.querySelector('.urgency-message');
+      if (existing) existing.remove();
+
+      if (slots.length <= 3 && slots.length > 0) {
+        const urgency = document.createElement('div');
+        urgency.className = 'urgency-message bg-amber-50 border-2 border-amber-300 rounded-xl p-4 mb-4 flex items-start gap-3';
+        urgency.innerHTML = `
+          <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <div>
+            <p class="font-semibold text-amber-900 text-sm">Limited availability!</p>
+            <p class="text-amber-700 text-xs">Only ${slots.length} slot${slots.length === 1 ? '' : 's'} remaining for this date.</p>
+          </div>
+        `;
+        container.insertBefore(urgency, container.firstChild);
+      }
+    }
+
+
+
+/* =========================
+ SLOT LOCKING SYSTEM
+========================= */
+async function lockSelectedSlot() {
+  if (bookingState.startedAt) return true; // Already locked
+  if (!bookingState.date || !bookingState.time) {
+    console.error("Cannot lock slot: missing date or time");
+    showToast("Please select a date and time first", "error");
+    return false;
+  }
+
+  // Calculate total duration
+  let duration = bookingState.service.duration;
+  bookingState.addons.forEach(addon => {
+    duration += addon.duration;
+  });
+
+  try {
+    const response = await fetch("/api/lock-slot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        date: bookingState.date,
+        time: bookingState.time,
+        duration: duration,
+        session_id: generateSessionId()
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Slot locked successfully
+      return true;
+    } else {
+      showToast("Could not reserve this time slot. Please try another.", "error");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error locking slot:", error);
+    showToast("Network error. Please try again.", "error");
+    return false;
+  }
+}
+
+async function releaseSelectedSlot() {
+  if (!bookingState.date || !bookingState.time) {
+    return;
+  }
+
+  try {
+    await fetch("/api/release-slot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        date: bookingState.date,
+        time: bookingState.time
+      })
+    });
+
+    console.log("Slot released");
+  } catch (error) {
+    console.error("Error releasing slot:", error);
+  }
+}
+
+function generateSessionId() {
+  return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+/* =========================
+ CUSTOM TIMER EXPIRY MODAL
+========================= */
+function showHoldExpiredModal() {
+  // Release the slot
+  releaseSelectedSlot();
+
+  // Clear timer
+  clearInterval(bookingState.timer);
+  bookingState.timer = null;
+  bookingState.startedAt = null;
+
+  // Create custom modal
+  const modal = document.createElement("div");
+  modal.className = "fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 animate-fadeIn";
+  modal.id = "expiredModal";
+
+  modal.innerHTML = `
+    <div class="bg-white rounded-2xl p-8 max-w-md text-center shadow-2xl transform animate-scaleIn">
+      <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+
+      <h3 class="text-2xl font-bold text-gray-900 mb-3">Time Hold Expired</h3>
+      <p class="text-gray-600 mb-6">
+        Your selected time slot has been released. Please choose a new time to continue booking.
+      </p>
+
+      <button
+        class="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
+        onclick="closeExpiredModal()"
+      >
+        Choose New Time
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Add CSS animations if not already present
+  if (!document.getElementById('expiredModalStyles')) {
+    const style = document.createElement('style');
+    style.id = 'expiredModalStyles';
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes scaleIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.2s ease-out;
+      }
+      .animate-scaleIn {
+        animation: scaleIn 0.3s ease-out;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
+function closeExpiredModal() {
+  const modal = document.getElementById('expiredModal');
+  if (modal) {
+    modal.remove();
+  }
+  goToStep(3); // Back to date/time selection
+}
+
+
+
+/* =========================
+ PAGE UNLOAD HANDLER
+========================= */
+window.addEventListener("beforeunload", () => {
+  // Release slot if timer is active
+  if (bookingState.startedAt && bookingState.date && bookingState.time) {
+    // Use sendBeacon for reliable delivery during page unload
+    navigator.sendBeacon(
+      "/api/release-slot",
+      JSON.stringify({
+        date: bookingState.date,
+        time: bookingState.time
+      })
+    );
+  }
+});
+
+// Also release on tab close/hide
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && bookingState.startedAt) {
+    releaseSelectedSlot();
+  }
+});
+
+function fillDetailsSummary() {
+  const [y, m, d] = bookingState.date.split("-");
+  const formatted = new Date(y, m - 1, d).toDateString();
+
+  document.getElementById("summaryService").textContent =
+    bookingState.service.name;
+
+  document.getElementById("summaryDate").textContent =
+    formatted;
+
+  document.getElementById("summaryTime").textContent =
+    bookingState.time;
+}
+
+async function submitBooking() {
+
+  const btn = document.getElementById("completeBookingBtn");
+
+  const fullName = document.getElementById("clientName").value.trim();
+  const email = document.getElementById("clientEmail").value.trim();
+  const notes = document.getElementById("clientNotes").value.trim();
+  const agree = document.getElementById("agreePolicy").checked;
+
+  if (!fullName || !email) {
+    showToast("Please fill in all required fields.", "error");
+    return;
+  }
+
+  if (!window.iti) {
+    showToast("Phone field not ready. Please refresh.", "error");
+    return;
+  }
+
+  const phone = window.iti.getNumber();
+
+  if (!phone) {
+    showToast("Please enter a valid phone number.", "error");
+    return;
+  }
+
+  if (!agree) {
+    showToast("You must agree to the salon policy.", "error");
+
+    document.getElementById("agreePolicy").classList.add("ring-2","ring-red-400");
+
+    setTimeout(() => {
+      document.getElementById("agreePolicy").classList.remove("ring-2","ring-red-400");
+    }, 2000);
+
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = "Processing...";
+  btn.classList.add("opacity-70");
+
+  try {
+
+    let totalDuration = bookingState.service.duration;
+    bookingState.addons.forEach(a => totalDuration += a.duration);
+
+    const response = await fetch("/api/create-booking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        full_name: fullName,
+        phone: phone,
+        email: email,
+        notes: notes,
+        service_id: bookingState.service.id,
+        service_name: bookingState.service.name,
+        date: bookingState.date,
+        time: bookingState.time,
+        duration: totalDuration
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail || "Booking failed");
+    }
+
+    showBookingSuccess(data);
+
+  } catch (error) {
+
+    showToast(error.message || "Something went wrong.", "error");
+
+    btn.disabled = false;
+    btn.innerText = "Complete Booking";
+    btn.classList.remove("opacity-70");
+  }
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const phoneInput = document.querySelector("#phone");
+
+  if (!phoneInput) return;
+
+  window.iti = window.intlTelInput(phoneInput, {
+    initialCountry: "jm", // Jamaica default
+    preferredCountries: ["jm", "us", "ca", "gb"],
+    separateDialCode: true,
+    autoPlaceholder: "off",
+    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
+  });
+
+  // Remove placeholder completely
+  phoneInput.placeholder = "";
+
+  // Make iti accessible globally if needed
+  window.itiInstance = iti;
+
+});
+
+const phoneStyle = document.createElement("style");
+phoneStyle.textContent = `
+
+   .iti--container {
+      z-index: 9999;
+   }
+
+   .iti__country-list {
+    width: 320px !important;
+  }
+
+  .iti {
+    width: 100%;
+  }
+
+  .iti__flag-container {
+    border-right: 1px solid #e5e7eb;
+  }
+
+  .iti__selected-flag {
+    padding: 0 12px;
+    border-top-left-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
+  }
+
+  .iti__country-list {
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    font-size: 14px;
+    max-height: 280px;
+  }
+
+  .iti__country {
+    padding: 8px 12px;
+  }
+
+  .iti__country:hover {
+    background-color: #fdf2f8;
+  }
+`;
+document.head.appendChild(phoneStyle);
+
+async function submitBooking() {
+  const btn = document.getElementById("completeBookingBtn");
+
+  // Collect fields
+  const fullName = document.getElementById("fullName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const notes = document.getElementById("notes").value.trim();
+  const agree = document.getElementById("agreePolicy").checked;
+
+  if (!fullName || !email || !bookingState.date || !bookingState.time) {
+    showToast("Please complete all required fields", "error");
+    return;
+  }
+
+  if (!agree) {
+    showToast("You must agree to the salon policy", "error");
+    return;
+  }
+
+  if (!iti) {
+    showToast("Phone input not ready. Refresh page.", "error");
+    return;
+  }
+
+  const phone = iti.getNumber(); // Full + country code
+
+  btn.disabled = true;
+  btn.innerText = "Processing...";
+  btn.classList.add("opacity-70");
+
+  try {
+    const response = await fetch("/api/create-booking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        full_name: fullName,
+        email: email,
+        phone: phone,
+        notes: notes,
+        service_id: bookingState.service.id,
+        date: bookingState.date,
+        time: bookingState.time,
+        duration: bookingState.service.duration +
+          bookingState.addons.reduce((sum, a) => sum + a.duration, 0)
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail || "Booking failed");
+    }
+
+    showBookingSuccess(data);
+
+  } catch (error) {
+    showToast(error.message || "Something went wrong", "error");
+    btn.disabled = false;
+    btn.innerText = "Complete Booking";
+    btn.classList.remove("opacity-70");
+  }
+}
+
+
+function showBookingSuccess(data) {
+  const container = document.getElementById("step-details");
+
+  container.innerHTML = `
+    <div class="text-center py-16">
+      <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5 13l4 4L19 7"></path>
+        </svg>
+      </div>
+
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">
+        Appointment Request Received
+      </h2>
+
+      <p class="text-gray-600 mb-8 max-w-md mx-auto">
+        We've received your booking request and will confirm once your deposit is received.
+      </p>
+
+      <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 max-w-md mx-auto text-left">
+        <p class="font-semibold text-gray-900 mb-3">Booking Summary</p>
+
+        <div class="flex justify-between text-sm mb-2">
+          <span>Date</span>
+          <strong>${bookingState.date}</strong>
+        </div>
+
+        <div class="flex justify-between text-sm mb-2">
+          <span>Time</span>
+          <strong>${bookingState.time}</strong>
+        </div>
+
+        <div class="flex justify-between text-sm mb-2">
+          <span>Service</span>
+          <strong>${bookingState.service.name}</strong>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <a href="/" class="inline-block bg-black text-white px-6 py-3 rounded-xl font-semibold">
+          Back to Home
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+
 </script>
+
 
 {% endblock %}

@@ -31,7 +31,7 @@ def generate_slots(
     service_duration_minutes: int,
     overrides: List[Tuple[time | None, time | None]] = None,
     existing_bookings: List[Tuple[datetime, datetime]] = None,
-) -> List[datetime]:
+) -> List[str]:
     """
     Returns list of valid slot start datetimes
     """
@@ -66,7 +66,7 @@ def generate_slots(
             cursor += interval
             continue
 
-        slots.append(candidate_start)
+        slots.append(candidate_start.strftime("%H:%M"))
         cursor += interval
 
     return slots
