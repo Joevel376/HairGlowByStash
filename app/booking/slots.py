@@ -1,9 +1,11 @@
 from datetime import datetime, date, time, timedelta
 from typing import List, Tuple
+from zoneinfo import ZoneInfo
 
 from config.availability import AVAILABILITY
 from config.services import SERVICES
 
+BUSINESS_TZ = ZoneInfo("America/Jamaica")
 
 SLOT_INTERVAL_MINUTES = 15
 
@@ -19,7 +21,8 @@ def parse_time(t: str) -> time:
 
 
 def combine_date_time(d: date, t: time) -> datetime:
-    return datetime.combine(d, t)
+    naive = datetime.combine(d, t)
+    return naive.replace(tzinfo=BUSINESS_TZ)
 
 
 # -------------------------
@@ -32,22 +35,24 @@ def generate_slots(
     overrides: List[Tuple[time | None, time | None]] = None,
     existing_bookings: List[Tuple[datetime, datetime]] = None,
 ) -> List[str]:
-    """
-    Returns list of valid slot start datetimes
-    """
 
     overrides = overrides or []
     existing_bookings = existing_bookings or []
 
     weekday = target_date.weekday()
 
-    # If no availability for this weekday → closed
     if weekday not in AVAILABILITY:
         return []
 
     start_str, end_str = AVAILABILITY[weekday]
     day_start = combine_date_time(target_date, parse_time(start_str))
     day_end = combine_date_time(target_date, parse_time(end_str))
+
+    now = datetime.now(BUSINESS_TZ)
+
+    # 🔥 If today and business hours already finished → no slots
+    if target_date == now.date() and now >= day_end:
+        return []
 
     slots = []
     cursor = day_start
@@ -58,7 +63,8 @@ def generate_slots(
         candidate_start = cursor
         candidate_end = cursor + duration
 
-        if _is_blocked(candidate_start, candidate_end, overrides):
+        # 🔥 Skip past times for today
+        if target_date == now.date() and candidate_start <= now:
             cursor += interval
             continue
 
@@ -70,6 +76,7 @@ def generate_slots(
         cursor += interval
 
     return slots
+
 
 
 # -------------------------

@@ -4,12 +4,25 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi import Depends, HTTPException, status
+import secrets
+
 from datetime import date, datetime, timedelta
 from collections import defaultdict
 from app.booking.slots import generate_slots
 from config.availability import AVAILABILITY
 from config.availability import is_slot_locked
-
+from email.message import EmailMessage
+import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from fastapi import BackgroundTasks
+from dotenv import load_dotenv
+from apscheduler.schedulers.background import BackgroundScheduler
+from sqlalchemy.orm import Session
+from sqlalchemy import desc
 
 from config.services import SERVICES, SERVICE_CATEGORIES
 from config.site import SITE
@@ -22,13 +35,7 @@ from config.availability import (
 from app.database import Base, engine, SessionLocal
 from app.models.booking import Booking
 
-
-# -------------------------
-# DB INIT
-# -------------------------
-
-Base.metadata.create_all(bind=engine)
-
+load_dotenv()
 
 # -------------------------
 # APP INIT
@@ -37,6 +44,85 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+def send_email(to_email: str, subject: str, html_content: str):
+    smtp_server = os.getenv("SMTP_SERVER")
+    smtp_port = int(os.getenv("SMTP_PORT"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_pass = os.getenv("SMTP_PASS")
+
+    msg = MIMEMultipart()
+    msg["From"] = smtp_user
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(html_content, "html"))
+
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.send_message(msg)
+
+
+security = HTTPBasic()
+
+def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_username = os.getenv("ADMIN_USERNAME", "admin")
+    correct_password = os.getenv("ADMIN_PASSWORD", "supersecure")
+
+    username_match = secrets.compare_digest(credentials.username, correct_username)
+    password_match = secrets.compare_digest(credentials.password, correct_password)
+
+    if not (username_match and password_match):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+
+    return credentials.username
+
+
+@app.get("/admin/dashboard")
+async def admin_dashboard(
+    request: Request,
+    status: str = None,
+    admin=Depends(verify_admin)
+):
+    db = SessionLocal()
+
+    query = db.query(Booking)
+
+    if status:
+        query = query.filter(Booking.status == status)
+
+    bookings = query.order_by(desc(Booking.created_at)).all()
+
+    pending_count = db.query(Booking).filter(Booking.status == "pending").count()
+    confirmed_count = db.query(Booking).filter(Booking.status == "confirmed").count()
+    cancelled_count = db.query(Booking).filter(Booking.status == "cancelled").count()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        "admin_dashboard.html",
+        {
+            "request": request,
+            "bookings": bookings,
+            "pending_count": pending_count,
+            "confirmed_count": confirmed_count,
+            "cancelled_count": cancelled_count,
+            "current_filter": status
+        }
+    )
+
+
+
+# -------------------------
+# DB INIT
+# -------------------------
+
+Base.metadata.create_all(bind=engine)
 
 
 # -------------------------
@@ -161,7 +247,10 @@ class CreateBookingRequest(BaseModel):
 
 
 @app.post("/api/create-booking")
-async def create_booking(payload: CreateBookingRequest):
+async def create_booking(
+    payload: CreateBookingRequest,
+    background_tasks: BackgroundTasks
+):
     db = SessionLocal()
 
     try:
@@ -197,8 +286,89 @@ async def create_booking(payload: CreateBookingRequest):
         db.commit()
         db.refresh(booking)
 
-        # Release temporary 10-min hold
+        # Release 10-minute hold
         release_slot(payload.date, payload.time)
+
+        # -------------------------
+        # EMAIL SECTION
+        # -------------------------
+
+        base_url = os.getenv("BASE_URL")
+        owner_email = os.getenv("OWNER_EMAIL")
+
+        reschedule_link = f"{base_url}/reschedule/{booking.id}"
+        cancel_link = f"{base_url}/cancel/{booking.id}"
+
+        # Owner Email
+        owner_html = f"""
+        <h2 style="color:#ec4899;">New Booking Request</h2>
+
+        <p><strong>Client:</strong> {payload.full_name}</p>
+        <p><strong>Phone:</strong> {payload.phone}</p>
+        <p><strong>Email:</strong> {payload.email}</p>
+
+        <hr>
+
+        <p><strong>Service:</strong> {payload.service_name}</p>
+        <p><strong>Date:</strong> {payload.date}</p>
+        <p><strong>Time:</strong> {payload.time}</p>
+
+        <p><strong>Notes:</strong><br>{payload.notes or "None"}</p>
+
+        <hr>
+
+        <p style="color:#b45309;">
+        ⚠ This booking is pending deposit confirmation.
+        </p>
+
+        <p>
+        <a href="{base_url}/admin/confirm/{booking.id}" 
+           style="background:#16a34a;color:white;padding:10px 18px;border-radius:6px;text-decoration:none;">
+           Confirm Booking
+        </a>
+        </p>
+
+        <p>
+        <a href="{base_url}/admin/cancel/{booking.id}" 
+           style="background:#dc2626;color:white;padding:10px 18px;border-radius:6px;text-decoration:none;">
+           Cancel Booking
+        </a>
+        </p>
+        """
+
+        background_tasks.add_task(
+            send_email,
+            owner_email,
+            "New Booking Request - Hair Glow By Stash",
+            owner_html
+        )
+
+        # Customer Email
+        customer_html = f"""
+        <h2>Your Booking Request Has Been Received</h2>
+        <p>Hi {payload.full_name},</p>
+        <p>Your appointment request has been received.</p>
+
+        <p><strong>Service:</strong> {payload.service_name}</p>
+        <p><strong>Date:</strong> {payload.date}</p>
+        <p><strong>Time:</strong> {payload.time}</p>
+
+        <p>Please send your deposit receipt within 24 hours.</p>
+
+        <hr>
+
+        <p>
+            <a href="{reschedule_link}">Reschedule</a> |
+            <a href="{cancel_link}">Cancel Appointment</a>
+        </p>
+        """
+
+        background_tasks.add_task(
+            send_email,
+            payload.email,
+            "Booking Request Received - Hair Glow By Stash",
+            customer_html
+        )
 
         return {
             "success": True,
@@ -208,6 +378,107 @@ async def create_booking(payload: CreateBookingRequest):
     finally:
         db.close()
 
+
+
+@app.get("/cancel/{booking_id}")
+def cancel_booking(booking_id: int):
+    db = SessionLocal()
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+
+    if not booking:
+        return {"error": "Booking not found"}
+
+    booking.status = "cancelled"
+    db.commit()
+    db.close()
+
+    return {"success": True, "message": "Booking cancelled"}
+
+
+@app.get("/reschedule/{booking_id}")
+def reschedule_page(booking_id: int):
+    return {"message": "Reschedule flow coming next"}
+
+
+
+@app.get("/admin/confirm/{booking_id}")
+def confirm_booking(booking_id: int, background_tasks: BackgroundTasks):
+
+    db = SessionLocal()
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+    admin = Depends(verify_admin)
+
+    if not booking:
+        db.close()
+        return {"error": "Booking not found"}
+
+    if booking.status != "pending":
+        db.close()
+        return {"message": "Booking already processed"}
+
+    booking.status = "confirmed"
+    db.commit()
+
+    # Send confirmation email to customer
+    confirmation_html = f"""
+    <h2>Your Appointment is Confirmed 🎉</h2>
+    <p>Hi {booking.full_name},</p>
+
+    <p>Your appointment has been confirmed.</p>
+
+    <p><strong>Service:</strong> {booking.service_name}</p>
+    <p><strong>Date:</strong> {booking.date}</p>
+    <p><strong>Time:</strong> {booking.time}</p>
+
+
+    <p>We look forward to seeing you!</p>
+    """
+
+    background_tasks.add_task(
+        send_email,
+        booking.email,
+        "Appointment Confirmed - Hair Glow By Stash",
+        confirmation_html
+    )
+
+    db.close()
+
+    return {"success": True, "message": "Booking confirmed"}
+
+
+@app.get("/admin/cancel/{booking_id}")
+def owner_cancel_booking(booking_id: int, background_tasks: BackgroundTasks):
+
+    db = SessionLocal()
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+    admin = Depends(verify_admin)
+
+    if not booking:
+        db.close()
+        return {"error": "Booking not found"}
+
+    booking.status = "cancelled"
+    db.commit()
+
+    # notify client
+    cancel_html = f"""
+    <h2>Your Appointment Was Cancelled</h2>
+    <p>Hi {booking.full_name},</p>
+    <p>Your booking has been cancelled.</p>
+
+    <p>If this was unexpected, please contact the salon.</p>
+    """
+
+    background_tasks.add_task(
+        send_email,
+        booking.email,
+        "Appointment Cancelled - Hair Glow By Stash",
+        cancel_html
+    )
+
+    db.close()
+
+    return {"success": True, "message": "Booking cancelled"}
 
 
 # -------------------------
@@ -253,3 +524,15 @@ def cleanup_expired_bookings():
 
     db.commit()
     db.close()
+
+
+scheduler = BackgroundScheduler()
+
+@app.on_event("startup")
+def start_scheduler():
+    scheduler.add_job(cleanup_expired_bookings, "interval", minutes=10)
+    scheduler.start()
+
+@app.on_event("shutdown")
+def shutdown_scheduler():
+    scheduler.shutdown()

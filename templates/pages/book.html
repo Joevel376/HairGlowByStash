@@ -858,8 +858,22 @@ async function renderCalendar(isInitial) {
   document.getElementById("calendarMonth").textContent =
     `${monthNames[calendarState.month]} ${calendarState.year}`;
 
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  // FORCE Jamaica timezone
+  const jamaicaNow = new Date().toLocaleString("en-US", {
+    timeZone: "America/Jamaica"
+  });
+
+  const today = new Date(jamaicaNow);
+  today.setHours(0, 0, 0, 0);
+
+  const currentHour = new Date(jamaicaNow).getHours();
+
+  // If it's past business closing (example 6PM)
+  if (currentHour >= 18) {
+    today.setDate(today.getDate() + 1);
+  }
+
+
 
   const firstDay = new Date(calendarState.year, calendarState.month, 1);
   const lastDay = new Date(calendarState.year, calendarState.month + 1, 0);
@@ -1508,116 +1522,285 @@ phoneStyle.textContent = `
 `;
 document.head.appendChild(phoneStyle);
 
-async function submitBooking() {
-  const btn = document.getElementById("completeBookingBtn");
+function showBookingSuccess(data) {
+  // Update progress bar to 100%
+  const progressBar = document.getElementById("progressBar");
+  const progressText = document.getElementById("progressText");
+  const progressPercent = document.getElementById("progressPercent");
+  const progressFill = document.getElementById("progressFill");
 
-  // Collect fields
-  const fullName = document.getElementById("fullName").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const notes = document.getElementById("notes").value.trim();
-  const agree = document.getElementById("agreePolicy").checked;
+  progressBar.classList.remove("hidden");
+  progressText.textContent = "Booking Complete";
+  progressPercent.textContent = "100%";
+  progressFill.style.width = "100%";
 
-  if (!fullName || !email || !bookingState.date || !bookingState.time) {
-    showToast("Please complete all required fields", "error");
-    return;
+  // Hide back button
+  const backBtn = document.getElementById("backBtn");
+  if (backBtn) backBtn.style.display = "none";
+
+  const container = document.getElementById("step-details");
+
+  // Calculate formatted date
+  const [y, m, d] = bookingState.date.split("-");
+  const dateObj = new Date(y, m - 1, d);
+  const formattedDate = dateObj.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  // Calculate total price
+  let totalPrice = getServicePrice(bookingState.service);
+  bookingState.addons.forEach(addon => {
+    totalPrice += getServicePrice(addon);
+  });
+
+  const deposit = Math.min(2000, totalPrice);
+
+  container.innerHTML = `
+    <div class="max-w-4xl mx-auto">
+      <!-- Success Hero Section -->
+      <div class="text-center py-12">
+        <!-- Animated Success Icon -->
+        <div class="relative inline-block mb-8">
+          <div class="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-75"></div>
+          <div class="relative w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-2xl">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+        </div>
+
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          🎉 Booking Request Received!
+        </h2>
+
+        <p class="text-lg text-gray-600 mb-2 max-w-xl mx-auto">
+          We're excited to pamper you! Your appointment request is confirmed.
+        </p>
+
+        <p class="text-sm text-gray-500 max-w-md mx-auto">
+          Please send your deposit via WhatsApp or Instagram to finalize your booking.
+        </p>
+      </div>
+
+      <!-- Booking Details Card -->
+      <div class="mb-8">
+        <div class="bg-gradient-to-br from-pink-50 to-white border-2 border-pink-200 rounded-2xl p-6 md:p-8 shadow-lg">
+          <div class="flex items-center justify-between mb-6 pb-4 border-b border-pink-200">
+            <h3 class="text-xl font-bold text-gray-900">Appointment Details</h3>
+            <span class="text-xs font-semibold text-white bg-gradient-to-r from-pink-500 to-pink-600 px-3 py-1.5 rounded-full shadow-sm">
+              Pending Deposit
+            </span>
+          </div>
+
+          <!-- Date & Time -->
+          <div class="space-y-5 mb-6">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Date & Time</p>
+                <p class="font-bold text-gray-900 text-lg">${formattedDate}</p>
+                <p class="text-pink-600 font-semibold text-base mt-0.5">${bookingState.time}</p>
+              </div>
+            </div>
+
+            <!-- Service -->
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Service</p>
+                <p class="font-bold text-gray-900 text-base">${bookingState.service.name}</p>
+                ${bookingState.addons.length > 0 ? `
+                  <div class="mt-2 space-y-1">
+                    <p class="text-xs text-gray-500 font-semibold">Add-ons:</p>
+                    ${bookingState.addons.map(addon => `
+                      <p class="text-sm text-gray-700 flex items-center gap-1">
+                        <svg class="w-3 h-3 text-pink-500" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/></svg>
+                        ${addon.name}
+                      </p>
+                    `).join('')}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Deposit -->
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Deposit Required</p>
+                <p class="text-3xl font-bold bg-gradient-to-r from-amber-600 to-amber-500 bg-clip-text text-transparent">
+                  J$${deposit.toLocaleString()}
+                </p>
+                <p class="text-xs text-gray-600 mt-1">Total Service Cost: <span class="font-semibold">J$${totalPrice.toLocaleString()}</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Instructions -->
+          <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 p-5 rounded-lg shadow-sm">
+            <div class="flex items-start gap-3">
+              <svg class="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <p class="text-sm font-bold text-amber-900 mb-2">📲 Next Step: Send Your Deposit</p>
+                <p class="text-xs text-amber-800 leading-relaxed">
+                  Transfer <strong>J$${deposit.toLocaleString()}</strong> via mobile money or bank transfer.
+                  Then send the receipt screenshot to our <strong>WhatsApp</strong> or <strong>Instagram DM</strong> to confirm your booking within 24 hours.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-4 mb-8">
+        <!-- WhatsApp & Instagram -->
+        <div class="grid md:grid-cols-2 gap-4">
+          <a
+            href="${generateWhatsAppLink()}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
+          >
+            <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            <span>Send via WhatsApp</span>
+          </a>
+
+          <a
+            href="https://instagram.com/hairglowbystash"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center justify-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
+          >
+            <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            <span>Send via Instagram</span>
+          </a>
+        </div>
+
+        <!-- Reschedule / Cancel -->
+        <div class="grid md:grid-cols-2 gap-4">
+          <button
+            onclick="rescheduleBooking()"
+            class="flex items-center justify-center gap-2 border-2 border-gray-300 hover:border-pink-500 hover:bg-pink-50 bg-white text-gray-700 hover:text-pink-600 px-6 py-3.5 rounded-xl font-semibold transition-all"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Reschedule Appointment
+          </button>
+
+          <button
+            onclick="cancelBooking()"
+            class="flex items-center justify-center gap-2 border-2 border-red-300 hover:border-red-500 hover:bg-red-50 bg-white text-red-600 hover:text-red-700 px-6 py-3.5 rounded-xl font-semibold transition-all"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            Cancel Request
+          </button>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="text-center pt-6 border-t border-gray-200">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors group"
+          >
+            <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span>Return to Home</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CSS for animations -->
+    <style>
+      @keyframes ping {
+        75%, 100% {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+      .animate-ping {
+        animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+      }
+    </style>
+  `;
+}
+
+// Helper function to generate WhatsApp message link
+function generateWhatsAppLink() {
+  let totalPrice = getServicePrice(bookingState.service);
+  bookingState.addons.forEach(addon => {
+    totalPrice += getServicePrice(addon);
+  });
+
+  const deposit = Math.min(2000, totalPrice);
+
+  let serviceName = bookingState.service.name;
+  if (bookingState.addons.length > 0) {
+    const addonNames = bookingState.addons.map(a => a.name).join(', ');
+    serviceName += ` + ${addonNames}`;
   }
 
-  if (!agree) {
-    showToast("You must agree to the salon policy", "error");
-    return;
-  }
+  const [y, m, d] = bookingState.date.split("-");
+  const dateObj = new Date(y, m - 1, d);
+  const formattedDate = dateObj.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 
-  if (!iti) {
-    showToast("Phone input not ready. Refresh page.", "error");
-    return;
-  }
+  const message = `Hi! I'd like to confirm my booking:
 
-  const phone = iti.getNumber(); // Full + country code
+📅 Date: ${formattedDate}
+🕐 Time: ${bookingState.time}
+💇‍♀️ Service: ${serviceName}
+💵 Deposit: J$${deposit.toLocaleString()}
+💰 Total: J$${totalPrice.toLocaleString()}
 
-  btn.disabled = true;
-  btn.innerText = "Processing...";
-  btn.classList.add("opacity-70");
+I'm ready to send the deposit. Thank you!`;
 
-  try {
-    const response = await fetch("/api/create-booking", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        full_name: fullName,
-        email: email,
-        phone: phone,
-        notes: notes,
-        service_id: bookingState.service.id,
-        date: bookingState.date,
-        time: bookingState.time,
-        duration: bookingState.service.duration +
-          bookingState.addons.reduce((sum, a) => sum + a.duration, 0)
-      })
-    });
+  const phoneNumber = "18765596826";
+  return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+}
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.detail || "Booking failed");
-    }
-
-    showBookingSuccess(data);
-
-  } catch (error) {
-    showToast(error.message || "Something went wrong", "error");
-    btn.disabled = false;
-    btn.innerText = "Complete Booking";
-    btn.classList.remove("opacity-70");
+function rescheduleBooking() {
+  if (confirm("Start a new booking? Your current request will be cancelled.")) {
+    window.location.href = "/book";
   }
 }
 
-
-function showBookingSuccess(data) {
-  const container = document.getElementById("step-details");
-
-  container.innerHTML = `
-    <div class="text-center py-16">
-      <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M5 13l4 4L19 7"></path>
-        </svg>
-      </div>
-
-      <h2 class="text-3xl font-bold text-gray-900 mb-4">
-        Appointment Request Received
-      </h2>
-
-      <p class="text-gray-600 mb-8 max-w-md mx-auto">
-        We've received your booking request and will confirm once your deposit is received.
-      </p>
-
-      <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 max-w-md mx-auto text-left">
-        <p class="font-semibold text-gray-900 mb-3">Booking Summary</p>
-
-        <div class="flex justify-between text-sm mb-2">
-          <span>Date</span>
-          <strong>${bookingState.date}</strong>
-        </div>
-
-        <div class="flex justify-between text-sm mb-2">
-          <span>Time</span>
-          <strong>${bookingState.time}</strong>
-        </div>
-
-        <div class="flex justify-between text-sm mb-2">
-          <span>Service</span>
-          <strong>${bookingState.service.name}</strong>
-        </div>
-      </div>
-
-      <div class="mt-10">
-        <a href="/" class="inline-block bg-black text-white px-6 py-3 rounded-xl font-semibold">
-          Back to Home
-        </a>
-      </div>
-    </div>
-  `;
+function cancelBooking() {
+  if (confirm("Are you sure you want to cancel this booking request? No deposit will be required.")) {
+    showToast("Booking request cancelled successfully.", "info");
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 2000);
+  }
 }
 
 
