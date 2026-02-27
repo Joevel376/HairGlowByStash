@@ -374,7 +374,9 @@
                     <label for="agreePolicy" class="text-sm text-gray-700">
                       I have read and agree to the
                       <a href="/policies" target="_blank" class="text-pink-600 font-semibold underline">
-                        Hair Glow By Stash Salon Policy & Terms
+                        <span class="brand-main">Hair Glow</span>
+                        <span class="brand-sub">By Stash</span>
+                        Salon Policy & Terms
                       </a>
                     </label>
                   </div>
@@ -403,7 +405,11 @@
 <footer class="bg-black text-gray-400 border-t border-gray-800">
   <div class="max-w-6xl mx-auto px-5 py-8">
     <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-sm">
-      <p>© 2026 Hair Glow By Stash. All rights reserved.</p>
+      <p>© 2026
+      <span class="brand-main">Hair Glow</span>
+      <span class="brand-sub">By Stash</span>.
+      All rights reserved.
+      </p>
       <div class="flex flex-wrap items-center justify-center gap-3">
         <a href="/policies" class="hover:text-pink-400 transition-colors">Policies</a>
         <span>•</span>
@@ -428,8 +434,23 @@ const bookingState = {
   currentStep: 1,
   holdMinutes: 10,
   timer: null,
-  startedAt: null
+  startedAt: null,
+  completed: false
 };
+
+function getOrCreateSessionId() {
+  let sessionId = localStorage.getItem("booking_session_id");
+
+  if (!sessionId) {
+    sessionId = "sess_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem("booking_session_id", sessionId);
+  }
+
+  return sessionId;
+}
+
+const SESSION_ID = getOrCreateSessionId();
+
 
 // Services data injected from backend
 const services = {{ services_by_category | tojson | safe }};
@@ -453,6 +474,11 @@ function openBookingModal() {
 }
 
 function closeBookingModal() {
+  if (bookingState.completed) return;
+  if (bookingState.completed) {
+    window.location.href = "/";
+    return;
+  }
   // Warn if hold is active
   if (bookingState.startedAt) {
     const ok = confirm("You have a reserved time slot. Closing will release it. Continue?");
@@ -533,7 +559,11 @@ async function awaitLockThenStartTimer() {
 }
 
 
-function handleBack() {
+async function handleBack() {
+  if (bookingState.completed) {
+    return; // 🚫 Do nothing if booking completed
+  }
+
   if (bookingState.currentStep === 2) {
     closeBookingModal();
   } else if (bookingState.currentStep === 2.5) {
@@ -541,8 +571,22 @@ function handleBack() {
   } else if (bookingState.currentStep === 3) {
     goToStep(2.5);
   } else if (bookingState.currentStep === 4) {
-    // Release slot when going back from confirmation
-    clearHold();
+    // Show loading state while releasing slot
+    const backBtn = document.getElementById("backButton");
+    const originalHTML = backBtn.innerHTML;
+    backBtn.disabled = true;
+    backBtn.innerHTML = '<svg class="animate-spin w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Releasing...';
+
+    // Release slot and clear timer
+    await clearHold();
+
+    // Clear selected time (so user can pick again)
+    bookingState.time = null;
+
+    // Restore button
+    backBtn.disabled = false;
+    backBtn.innerHTML = originalHTML;
+
     goToStep(3);
   }
 }
@@ -583,7 +627,11 @@ function updateTimer() {
   if (largeTimer) largeTimer.textContent = timeStr;
 }
 
-function clearHold() {
+async function clearHold() {
+  // Release the locked slot
+  await releaseSelectedSlot();
+
+  // Clear the timer
   clearInterval(bookingState.timer);
   bookingState.timer = null;
   bookingState.startedAt = null;
@@ -868,11 +916,6 @@ async function renderCalendar(isInitial) {
 
   const currentHour = new Date(jamaicaNow).getHours();
 
-  // If it's past business closing (example 6PM)
-  if (currentHour >= 18) {
-    today.setDate(today.getDate() + 1);
-  }
-
 
 
   const firstDay = new Date(calendarState.year, calendarState.month, 1);
@@ -988,7 +1031,7 @@ function showTimeSlots(dateStr) {
       class="border-2 border-gray-300 rounded-xl py-3 px-4 text-sm font-medium hover:border-pink-500 hover:bg-pink-50 transition-all"
       onclick="selectTime('${t}')"
     >
-      ${t}
+      ${formatTime12h(t)}
     </button>
   `).join("");
 
@@ -1022,6 +1065,21 @@ function selectTime(time) {
 
 function formatDate(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function formatTime12h(time24) {
+  const [hourStr, minuteStr] = time24.split(":");
+  let hour = parseInt(hourStr, 10);
+  const minute = minuteStr;
+
+  const ampm = hour >= 12 ? "pm" : "am";
+
+  hour = hour % 12;
+  if (hour === 0) hour = 12;
+
+  return minute === "00"
+    ? `${hour}${ampm}`          // ← removed space
+    : `${hour}:${minute}${ampm}`;  // ← removed space
 }
 
 function wait(ms) {
@@ -1096,7 +1154,8 @@ function showToast(message, type = 'info') {
  KEYBOARD NAVIGATION
 ========================= */
 document.addEventListener('keydown', function(e) {
-  // ESC to close modal
+  if (bookingState.completed) return;
+
   if (e.key === 'Escape' && bookingState.currentStep >= 2) {
     closeBookingModal();
   }
@@ -1169,28 +1228,8 @@ style.textContent = `
 document.head.appendChild(style);
 
     function addUrgencyIndicator(slots) {
-      const container = document.getElementById("timeSlotsContainer");
-
-      // Remove existing urgency message
-      const existing = container.querySelector('.urgency-message');
-      if (existing) existing.remove();
-
-      if (slots.length <= 3 && slots.length > 0) {
-        const urgency = document.createElement('div');
-        urgency.className = 'urgency-message bg-amber-50 border-2 border-amber-300 rounded-xl p-4 mb-4 flex items-start gap-3';
-        urgency.innerHTML = `
-          <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <div>
-            <p class="font-semibold text-amber-900 text-sm">Limited availability!</p>
-            <p class="text-amber-700 text-xs">Only ${slots.length} slot${slots.length === 1 ? '' : 's'} remaining for this date.</p>
-          </div>
-        `;
-        container.insertBefore(urgency, container.firstChild);
-      }
+      return; // disabled
     }
-
 
 
 /* =========================
@@ -1218,7 +1257,7 @@ async function lockSelectedSlot() {
         date: bookingState.date,
         time: bookingState.time,
         duration: duration,
-        session_id: generateSessionId()
+        session_id: SESSION_ID
       })
     });
 
@@ -1249,7 +1288,8 @@ async function releaseSelectedSlot() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         date: bookingState.date,
-        time: bookingState.time
+        time: bookingState.time,
+        session_id: SESSION_ID
       })
     });
 
@@ -1257,10 +1297,6 @@ async function releaseSelectedSlot() {
   } catch (error) {
     console.error("Error releasing slot:", error);
   }
-}
-
-function generateSessionId() {
-  return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 
 /* =========================
@@ -1347,10 +1383,14 @@ window.addEventListener("beforeunload", () => {
     // Use sendBeacon for reliable delivery during page unload
     navigator.sendBeacon(
       "/api/release-slot",
-      JSON.stringify({
-        date: bookingState.date,
-        time: bookingState.time
-      })
+      new Blob(
+        [JSON.stringify({
+          date: bookingState.date,
+          time: bookingState.time,
+          session_id: SESSION_ID
+        })],
+        { type: "application/json" }
+      )
     );
   }
 });
@@ -1373,7 +1413,7 @@ function fillDetailsSummary() {
     formatted;
 
   document.getElementById("summaryTime").textContent =
-    bookingState.time;
+    formatTime12h(bookingState.time);
 }
 
 async function submitBooking() {
@@ -1424,28 +1464,39 @@ async function submitBooking() {
     bookingState.addons.forEach(a => totalDuration += a.duration);
 
     const response = await fetch("/api/create-booking", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        full_name: fullName,
-        phone: phone,
-        email: email,
-        notes: notes,
-        service_id: bookingState.service.id,
-        service_name: bookingState.service.name,
-        date: bookingState.date,
-        time: bookingState.time,
-        duration: totalDuration
-      })
-    });
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      full_name: fullName,
+      phone: phone,
+      email: email,
+      notes: notes,
+      service_id: bookingState.service.id,
+      service_name: bookingState.service.name,
+      date: bookingState.date,
+      time: bookingState.time,
+      duration: totalDuration,
+      session_id: SESSION_ID
+    })
+  });
 
-    const data = await response.json();
+  let data;
 
-    if (!response.ok) {
-      throw new Error(data.detail || "Booking failed");
-    }
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error("Unexpected server response. Please refresh and try again.");
+  }
 
-    showBookingSuccess(data);
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+      data?.detail ||
+      "That time is no longer available. Please choose another slot."
+    );
+  }
+
+  showBookingSuccess(data);
 
   } catch (error) {
 
@@ -1522,7 +1573,23 @@ phoneStyle.textContent = `
 `;
 document.head.appendChild(phoneStyle);
 
+
 function showBookingSuccess(data) {
+  bookingState.completed = true;
+  releaseSelectedSlot();
+
+  // Stop timer properly
+  if (bookingState.timer) {
+    clearInterval(bookingState.timer);
+    bookingState.timer = null;
+  }
+
+  bookingState.startedAt = null;
+
+  // Hide header timer
+  const headerTimer = document.getElementById("holdTimer");
+  if (headerTimer) headerTimer.classList.add("hidden");
+
   // Update progress bar to 100%
   const progressBar = document.getElementById("progressBar");
   const progressText = document.getElementById("progressText");
@@ -1535,8 +1602,9 @@ function showBookingSuccess(data) {
   progressFill.style.width = "100%";
 
   // Hide back button
-  const backBtn = document.getElementById("backBtn");
+  const backBtn = document.getElementById("backButton");
   if (backBtn) backBtn.style.display = "none";
+
 
   const container = document.getElementById("step-details");
 
@@ -1777,7 +1845,7 @@ function generateWhatsAppLink() {
   const message = `Hi! I'd like to confirm my booking:
 
 📅 Date: ${formattedDate}
-🕐 Time: ${bookingState.time}
+🕐 Time: ${formatTime12h(bookingState.time)}
 💇‍♀️ Service: ${serviceName}
 💵 Deposit: J$${deposit.toLocaleString()}
 💰 Total: J$${totalPrice.toLocaleString()}

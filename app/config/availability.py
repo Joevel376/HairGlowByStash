@@ -1,4 +1,8 @@
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+
+# Business timezone
+BUSINESS_TZ = ZoneInfo("America/Jamaica")
 
 AVAILABILITY = {
     6: ("16:00", "23:00"),  # Sunday
@@ -18,7 +22,7 @@ TEMP_LOCKS = {}
 
 def cleanup_expired_locks():
     """Remove expired locks"""
-    now = datetime.utcnow()
+    now = datetime.now(BUSINESS_TZ)  # ✅ Fixed: Use Jamaica timezone
     expired_keys = [
         key for key, lock in TEMP_LOCKS.items()
         if lock["expires_at"] <= now
@@ -27,22 +31,41 @@ def cleanup_expired_locks():
         del TEMP_LOCKS[key]
 
 
-def lock_slot(date_str: str, time_str: str, duration_minutes: int, session_id: str = None):
+def lock_slot(date_str: str, time_str: str, duration_minutes: int, session_id: str):
     """Lock a time slot for 10 minutes"""
+
     cleanup_expired_locks()
 
     key = f"{date_str}|{time_str}"
+
+    existing = TEMP_LOCKS.get(key)
+
+    # If already locked by someone else → deny
+    if existing and existing["session_id"] != session_id:
+        return False
+
     TEMP_LOCKS[key] = {
-        "expires_at": datetime.utcnow() + timedelta(minutes=10),
+        "expires_at": datetime.now(BUSINESS_TZ) + timedelta(minutes=10),  # ✅ Fixed: Use Jamaica timezone
         "duration_minutes": duration_minutes,
-        "session_id": session_id or "unknown"
+        "session_id": session_id
     }
+
     return True
 
 
-def release_slot(date_str: str, time_str: str):
-    """Release a locked time slot"""
+
+def release_slot(date_str: str, time_str: str, session_id: str):
+    """Release a locked time slot (only owner can release)"""
+
     key = f"{date_str}|{time_str}"
+    existing = TEMP_LOCKS.get(key)
+
+    if not existing:
+        return False
+
+    if existing["session_id"] != session_id:
+        return False  # Not owner
+
     TEMP_LOCKS.pop(key, None)
     return True
 
@@ -76,17 +99,18 @@ def is_slot_locked(date_str: str, time_str: str, duration_minutes: int) -> bool:
 
 
 def get_active_locks_for_date(date_str: str):
-    """Get all active locks for a specific date"""
     cleanup_expired_locks()
 
     locks = []
     for lock_key, lock_data in TEMP_LOCKS.items():
         lock_date, lock_time = lock_key.split("|")
+
         if lock_date == date_str:
             locks.append({
                 "time": lock_time,
                 "duration": lock_data["duration_minutes"],
-                "expires_at": lock_data["expires_at"].isoformat()
+                "expires_at": lock_data["expires_at"].isoformat(),
+                "session_id": lock_data["session_id"]  # ✅ ADD THIS
             })
 
     return locks

@@ -13,13 +13,18 @@
           <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
           <p class="text-gray-600">Manage your bookings and appointments</p>
         </div>
-        <div class="mt-4 md:mt-0">
-          <button onclick="refreshDashboard()" class="flex items-center gap-2 bg-white border border-gray-300 hover:border-pink-500 px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-pink-600 transition-all shadow-sm hover:shadow">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-            </svg>
+        <div class="mt-4 md:mt-0 flex items-center gap-3">
+
+          <button onclick="refreshDashboard()"
+            class="flex items-center gap-2 bg-white border border-gray-300 hover:border-pink-500 px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-pink-600 transition-all shadow-sm hover:shadow">
             Refresh
           </button>
+
+          <a href="/admin/logout"
+             class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-all shadow-sm hover:shadow">
+             Logout
+          </a>
+
         </div>
       </div>
     </div>
@@ -322,6 +327,11 @@ async function confirmBooking(id) {
 
   try {
     const response = await fetch(`/admin/confirm/${id}`);
+    if (response.redirected) {
+        window.location.href = response.url;
+        return;
+    }
+
     const data = await response.json();
 
     if (data.success) {
@@ -341,6 +351,11 @@ async function cancelBooking(id) {
 
   try {
     const response = await fetch(`/admin/cancel/${id}`);
+    if (response.redirected) {
+        window.location.href = response.url;
+        return;
+    }
+
     const data = await response.json();
 
     if (data.success) {

@@ -16,17 +16,42 @@
 
 
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: '#ec4899',
-            dark: '#0f0f0f'
-          }
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: '#ec4899',
+          dark: '#0f0f0f'
         }
       }
     }
-  </script>
+  }
+</script>
+
+<style>
+  /* Primary brand (Glow effect) */
+  .brand-main {
+    background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  /* Secondary brand text */
+  .brand-sub {
+    color: #ec4899;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-brand:hover .brand-main {
+    filter: brightness(1.1);
+  }
+
+</style>
+
 </head>
 
 <body class="bg-white text-gray-900 antialiased font-[Inter]">
